@@ -9,8 +9,6 @@ import {
   Snackbar,
   TextField,
 } from "@mui/material";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
 
 export default function AlertDialog() {
   const [open, setOpen] = React.useState(false);
@@ -66,15 +64,7 @@ export default function AlertDialog() {
           <Button
             onClick={async () => {
               console.log("sending email to: ", email);
-              try {
-                await firebase.auth().sendPasswordResetEmail(email);
-                setOpen(false);
-                setToastOpen(true);
-                setToastMessage("Password reset email sent!");
-              } catch (error) {
-                setToastOpen(true);
-                setToastMessage((error as any)?.message ?? "");
-              }
+              
             }}
             color="primary"
             autoFocus

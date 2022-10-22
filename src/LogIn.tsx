@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useLocation } from 'react-router-dom';
 import ForgotPasswordButton from './ForgotPassword';
-import { auth } from './App';
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import {
   Avatar,
   Box,
@@ -32,7 +30,7 @@ interface FormValues {
   password?: string;
 }
 
-const provider = new GoogleAuthProvider();
+// const provider = new GoogleAuthProvider();
 
 const LoginPage: React.FC = (props) => {
   const [loading, setLoading] = useState(false);
@@ -105,35 +103,35 @@ const LoginPage: React.FC = (props) => {
               disabled={loading}
               onClick={() => {
                 setLoading(true);
-                signInWithPopup(auth, provider)
-                  .then((result) => {
-                    redirect(location.state ? (location.state as any).nextPathname : '/');
-                  })
-                  .catch((error) => {
-                    notify(
-                      // eslint-disable-next-line no-nested-ternary
-                      typeof error === 'string'
-                        ? error
-                        : typeof error === 'undefined' || !error.message
-                          ? 'ra.auth.sign_in_error'
-                          : error.message,
-                      {
-                        type: 'warning',
-                        messageArgs: {
-                          _:
-                            // eslint-disable-next-line no-nested-ternary
-                            typeof error === 'string'
-                              ? error
-                              : error && error.message
-                                ? error.message
-                                : undefined,
-                        },
-                      },
-                    );
-                  })
-                  .finally(() => {
-                    setLoading(false);
-                  })
+                // signInWithPopup(auth, provider)
+                  // .then((result) => {
+                  //   redirect(location.state ? (location.state as any).nextPathname : '/');
+                  // })
+                  // .catch((error) => {
+                  //   notify(
+                  //     // eslint-disable-next-line no-nested-ternary
+                  //     typeof error === 'string'
+                  //       ? error
+                  //       : typeof error === 'undefined' || !error.message
+                  //         ? 'ra.auth.sign_in_error'
+                  //         : error.message,
+                  //     {
+                  //       type: 'warning',
+                  //       messageArgs: {
+                  //         _:
+                  //           // eslint-disable-next-line no-nested-ternary
+                  //           typeof error === 'string'
+                  //             ? error
+                  //             : error && error.message
+                  //               ? error.message
+                  //               : undefined,
+                  //       },
+                  //     },
+                  //   );
+                  // })
+                  // .finally(() => {
+                  //   setLoading(false);
+                  // })
               }}
               fullWidth
               sx={{
