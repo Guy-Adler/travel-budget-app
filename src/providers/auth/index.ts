@@ -1,5 +1,4 @@
-import type { AuthProvider, UserIdentity } from 'ra-core';
-import type { SupabaseClient, User } from '@supabase/supabase-js';
+import type { AuthProvider } from 'ra-core';
 import client from '../supabase';
 import type Schema from '../../types/schema';
 
@@ -8,7 +7,7 @@ export interface SupabaseAuthProvider extends AuthProvider {
   setPassword: (params: SetPasswordParams) => Promise<void>;
 }
 
-export type LoginCredentials = { email: string, password: string };
+export type LoginCredentials = { username: string, password: string };
 
 class CheckAuthError extends Error {
   redirectTo: string;
@@ -27,7 +26,7 @@ const getInitialsAvatarUrl = (first_name: string | undefined, last_name: string 
 }
 
 export const supabaseAuthProvider: SupabaseAuthProvider = {
-  async login({ email, password }: LoginCredentials) {
+  async login({ username: email, password }: LoginCredentials) {
     const { error } = await client.auth.signIn({ email, password });
     if (error) {
       throw error;
@@ -41,38 +40,36 @@ export const supabaseAuthProvider: SupabaseAuthProvider = {
     }
   },
   async checkAuth() {
-    // Users are on the set-password page, nothing to do
-    if (window.location.pathname === '/set-password') {
-      return;
-    }
+    // // Users are on the set-password page, nothing to do
+    // if (window.location.pathname === '/set-password') {
+    //   return;
+    // }
 
-    const urlSearchParams = new URLSearchParams(
-      window.location.hash.slice(1)
-    );
+    // const urlSearchParams = new URLSearchParams(
+    //   window.location.hash.slice(1)
+    // );
 
 
-    const access_token = urlSearchParams.get('access_token');
-    const type = urlSearchParams.get('type');
+    // const access_token = urlSearchParams.get('access_token');
+    // const type = urlSearchParams.get('type');
 
-    // Users have reset their password and must set a new one
-    if (access_token && type === 'recovery') {
-      // eslint-disable-next-line no-throw-literal
-      throw new CheckAuthError(
-        'Users have reset their password and must set a new one',
-        `set-password?access_token=${access_token}`
-      );
-    }
+    // // Users have reset their password and must set a new one
+    // if (access_token && type === 'recovery') {
+    //   throw new CheckAuthError(
+    //     'Users have reset their password and must set a new one',
+    //     `set-password?access_token=${access_token}`
+    //   );
+    // }
 
-    // Users have have been invited and must set their password
-    if (access_token && type === 'invite') {
-      // eslint-disable-next-line no-throw-literal
-      throw new CheckAuthError(
-        'Users have have been invited and must set their password',
-        `set-password?access_token=${access_token}`
-      );
-    }
+    // // Users have have been invited and must set their password
+    // if (access_token && type === 'invite') {
+    //   throw new CheckAuthError(
+    //     'Users have have been invited and must set their password',
+    //     `set-password?access_token=${access_token}`
+    //   );
+    // }
 
-    if (client.auth.session() == null) {
+    if (client.auth.session() === null) {
       throw new Error();
     }
 

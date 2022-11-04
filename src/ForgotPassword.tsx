@@ -9,6 +9,7 @@ import {
   Snackbar,
   TextField,
 } from "@mui/material";
+import supabase from "./providers/supabase";
 
 export default function AlertDialog() {
   const [open, setOpen] = React.useState(false);
@@ -64,7 +65,7 @@ export default function AlertDialog() {
           <Button
             onClick={async () => {
               console.log("sending email to: ", email);
-              
+              supabase.auth.api.resetPasswordForEmail(email);
             }}
             color="primary"
             autoFocus
