@@ -2,7 +2,7 @@ import type { AuthProvider } from 'ra-core';
 import client from '../supabase';
 import type Schema from '../../types/schema';
 
-export type SetPasswordParams = { access_token: string; password: string };
+export type SetPasswordParams = { password: string };
 export interface SupabaseAuthProvider extends AuthProvider {
   setPassword: (params: SetPasswordParams) => Promise<void>;
 }
@@ -40,35 +40,6 @@ export const supabaseAuthProvider: SupabaseAuthProvider = {
     }
   },
   async checkAuth() {
-    // // Users are on the set-password page, nothing to do
-    // if (window.location.pathname === '/set-password') {
-    //   return;
-    // }
-
-    // const urlSearchParams = new URLSearchParams(
-    //   window.location.hash.slice(1)
-    // );
-
-
-    // const access_token = urlSearchParams.get('access_token');
-    // const type = urlSearchParams.get('type');
-
-    // // Users have reset their password and must set a new one
-    // if (access_token && type === 'recovery') {
-    //   throw new CheckAuthError(
-    //     'Users have reset their password and must set a new one',
-    //     `set-password?access_token=${access_token}`
-    //   );
-    // }
-
-    // // Users have have been invited and must set their password
-    // if (access_token && type === 'invite') {
-    //   throw new CheckAuthError(
-    //     'Users have have been invited and must set their password',
-    //     `set-password?access_token=${access_token}`
-    //   );
-    // }
-
     if (client.auth.session() === null) {
       throw new Error();
     }
@@ -81,13 +52,20 @@ export const supabaseAuthProvider: SupabaseAuthProvider = {
   async getPermissions() {
     return;
   },
-  async setPassword({ access_token, password }) {
+  async setPassword({ password }: SetPasswordParams) {
+    const access_token = client.auth.session()?.access_token;
+  
+    if (access_token === undefined) {
+      throw new CheckAuthError('ra.notification.logged_out', '/login');
+    }
+  
     const { error } = await client.auth.api.updateUser(access_token, {
       password,
     });
-
+  
     if (error) {
-      throw error;
+      // throw error;
+      throw new CheckAuthError(`(${error.status}) ${error.message}`, '/login');
     }
     return undefined;
   },

@@ -1,20 +1,5 @@
 import React, { useState } from "react";
 import { useLocation } from 'react-router-dom';
-import ForgotPasswordButton from './ForgotPassword';
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CircularProgress,
-  Divider,
-  Stack,
-} from '@mui/material';
-import {
-  Lock as LockIcon,
-  Google as GoogleIcon,
-} from '@mui/icons-material';
 import {
   Form,
   required,
@@ -22,24 +7,31 @@ import {
   useTranslate,
   useLogin,
   useNotify,
-  useRedirect,
 } from 'react-admin';
+import ForgotPasswordButton from './ForgotPassword';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CircularProgress from '@mui/material/CircularProgress';
+import Divider from '@mui/material/Divider';
+import Stack from '@mui/material/Stack';
+import LockIcon from '@mui/icons-material/Lock';
+import GoogleIcon from '@mui/icons-material/Google';
 
 interface FormValues {
   username?: string;
   password?: string;
 }
 
-// const provider = new GoogleAuthProvider();
-
-const LoginPage: React.FC = (props) => {
+const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const translate = useTranslate();
 
   const notify = useNotify();
   const login = useLogin();
   const location = useLocation();
-  const redirect = useRedirect();
 
   const handleSubmit = (auth: FormValues) => {
     setLoading(true);
@@ -102,36 +94,7 @@ const LoginPage: React.FC = (props) => {
               variant="outlined"
               disabled={loading}
               onClick={() => {
-                setLoading(true);
-                // signInWithPopup(auth, provider)
-                  // .then((result) => {
-                  //   redirect(location.state ? (location.state as any).nextPathname : '/');
-                  // })
-                  // .catch((error) => {
-                  //   notify(
-                  //     // eslint-disable-next-line no-nested-ternary
-                  //     typeof error === 'string'
-                  //       ? error
-                  //       : typeof error === 'undefined' || !error.message
-                  //         ? 'ra.auth.sign_in_error'
-                  //         : error.message,
-                  //     {
-                  //       type: 'warning',
-                  //       messageArgs: {
-                  //         _:
-                  //           // eslint-disable-next-line no-nested-ternary
-                  //           typeof error === 'string'
-                  //             ? error
-                  //             : error && error.message
-                  //               ? error.message
-                  //               : undefined,
-                  //       },
-                  //     },
-                  //   );
-                  // })
-                  // .finally(() => {
-                  //   setLoading(false);
-                  // })
+                // TODO set up google login 
               }}
               fullWidth
               sx={{
@@ -141,10 +104,19 @@ const LoginPage: React.FC = (props) => {
             >
               <GoogleIcon />
               Log in with google
+              {
+                // TODO i18n ^^^
+              }
             </Button>
+            {
+              // TODO set up facebook login
+            }
           </Box>
           <Box sx={{ padding: '1em 1em 0 1em' }}>
             <Divider>OR</Divider>
+            {
+              // TODO i18n ^^^
+            }
           </Box>
           <Box sx={{ padding: '0 1em 1em 1em' }}>
             <Box sx={{ marginTop: '1em' }}>

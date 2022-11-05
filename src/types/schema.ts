@@ -7,7 +7,7 @@ export type UUID = `${UUID8}-${UUID4}-${UUID4}-${UUID4}-${UUID12}`;
 type TextDate = `${number}-${number}-${number}`;
 type Currency = `${Alphabet}${Alphabet}${Alphabet}`;
 
-type Schema = {
+export type Schema = {
   profiles: {
     id: UUID;
     email?: string;
