@@ -7,6 +7,7 @@ import {
   useTranslate,
   useLogin,
   useNotify,
+  useRedirect,
 } from 'react-admin';
 import ForgotPasswordButton from './ForgotPassword';
 import Avatar from '@mui/material/Avatar';
@@ -19,6 +20,7 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import LockIcon from '@mui/icons-material/Lock';
 import GoogleIcon from '@mui/icons-material/Google';
+import client from './providers/supabase';
 
 interface FormValues {
   username?: string;
@@ -32,6 +34,7 @@ const LoginPage: React.FC = () => {
   const notify = useNotify();
   const login = useLogin();
   const location = useLocation();
+  const redirect = useRedirect();
 
   const handleSubmit = (auth: FormValues) => {
     setLoading(true);
@@ -93,8 +96,20 @@ const LoginPage: React.FC = () => {
             <Button
               variant="outlined"
               disabled={loading}
-              onClick={() => {
-                // TODO set up google login 
+              onClick={async () => {
+                setLoading(true);
+                const { user, error } = await client.auth.signIn({
+                  provider: 'google'
+                });
+                if (error) {
+                  notify('ra.auth.sign_in_error', {
+                    type: 'warning',
+                  });
+                }
+                if (user) {
+                  redirect(location.state ? (location.state as any).nextPathname : '/');
+                }
+                setLoading(false);
               }}
               fullWidth
               sx={{
@@ -108,9 +123,6 @@ const LoginPage: React.FC = () => {
                 // TODO i18n ^^^
               }
             </Button>
-            {
-              // TODO set up facebook login
-            }
           </Box>
           <Box sx={{ padding: '1em 1em 0 1em' }}>
             <Divider>OR</Divider>
