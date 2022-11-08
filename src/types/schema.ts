@@ -39,6 +39,7 @@ export type Schema = {
     email?: string;
     first_name?: string;
     last_name?: string;
+    avatar_url?: string;
   };
   trips: {
     id: number;

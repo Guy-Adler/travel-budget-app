@@ -83,7 +83,7 @@ export const supabaseAuthProvider: SupabaseAuthProvider = {
 
     const { data, error } = await client
       .from<Schema['profiles']>('profiles')
-      .select('first_name, last_name')
+      .select('first_name, last_name, avatar_url')
       .match({ id: user.id })
       .single();
 
@@ -91,28 +91,9 @@ export const supabaseAuthProvider: SupabaseAuthProvider = {
       throw new Error(`(${error.code}): ${error.message}`);
     }
 
-    const { data: files, error: err } = await client.storage
-      .from('avatars')
-      .list();
-    let avatar: string | undefined;
-    if (err || files?.length !== 1) {
-      avatar = getInitialsAvatarUrl(data.first_name, data.last_name);
-    } else {
-      const { data: avatarBuffer, error: e } = await client.storage
-        .from('avatars')
-        .download(files[0].name);
-      if (!avatarBuffer || e) {
-        avatar = getInitialsAvatarUrl(data.first_name, data.last_name);
-      } else {
-        avatar = `data:${avatarBuffer.type};base64,${Buffer.from(
-          await avatarBuffer.arrayBuffer()
-        ).toString('base64')}`;
-      }
-    }
-
     return {
       id: user.id,
-      avatar,
+      avatar: data?.avatar_url || getInitialsAvatarUrl(data.first_name, data.last_name),
       fullName: `${data?.first_name} ${data?.last_name}`.trim() || undefined,
     };
   },
