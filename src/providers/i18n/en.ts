@@ -14,9 +14,11 @@ const customEnglishMessages: TranslationMessages = {
     reset_link_sent:
       'Login link sent successfully!\nAfter clicking the link, go to your profile to reset your password.',
   },
-  conditionals: {
-    or: 'OR',
-  },
+  or: 'OR',
+  profile: {
+    title: 'Profile',
+    picture_dialog_title: 'Edit or Delete Your Profile Picture',
+  }
 };
 
 export default customEnglishMessages;

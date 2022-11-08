@@ -1,0 +1,33 @@
+@mixin object-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  color: transparent;
+  transition: all .3s ease;
+  @include object-center;
+  position: relative;
+  transition: all .3s ease;
+  
+  .profilePicture {
+    position: absolute;
+    z-index: 0;
+  }
+  
+  .overlay {
+    cursor: pointer;
+  }
+  
+  &:hover {
+    .overlay {
+      @include object-center;
+      background-color: rgba(0,0,0,.8);
+      z-index: 10000;
+      border-radius: 50%;
+      transition: background-color .2s ease-in-out;
+      margin-bottom: 0;
+    }
+  }
+}

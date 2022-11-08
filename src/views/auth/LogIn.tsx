@@ -123,7 +123,7 @@ const LoginPage: React.FC = () => {
             </Button>
           </Box>
           <Box sx={{ padding: '1em 1em 0 1em' }}>
-            <Divider>{translate('conditionals.or')}</Divider>
+            <Divider>{translate('or')}</Divider>
           </Box>
           <Box sx={{ padding: '0 1em 1em 1em' }}>
             <Box sx={{ marginTop: '1em' }}>
