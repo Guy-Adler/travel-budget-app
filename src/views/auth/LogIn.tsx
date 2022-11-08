@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   Form,
@@ -40,7 +40,7 @@ const LoginPage: React.FC = () => {
     setLoading(true);
     login(
       auth,
-      location.state ? (location.state as any).nextPathname : '/',
+      location.state ? (location.state as any).nextPathname : '/'
     ).catch((error: Error) => {
       setLoading(false);
       notify(
@@ -48,8 +48,8 @@ const LoginPage: React.FC = () => {
         typeof error === 'string'
           ? error
           : typeof error === 'undefined' || !error.message
-            ? 'ra.auth.sign_in_error'
-            : error.message,
+          ? 'ra.auth.sign_in_error'
+          : error.message,
         {
           type: 'warning',
           messageArgs: {
@@ -58,10 +58,10 @@ const LoginPage: React.FC = () => {
               typeof error === 'string'
                 ? error
                 : error && error.message
-                  ? error.message
-                  : undefined,
+                ? error.message
+                : undefined,
           },
-        },
+        }
       );
     });
   };
@@ -99,7 +99,7 @@ const LoginPage: React.FC = () => {
               onClick={async () => {
                 setLoading(true);
                 const { user, error } = await client.auth.signIn({
-                  provider: 'google'
+                  provider: 'google',
                 });
                 if (error) {
                   notify('ra.auth.sign_in_error', {
@@ -107,28 +107,23 @@ const LoginPage: React.FC = () => {
                   });
                 }
                 if (user) {
-                  redirect(location.state ? (location.state as any).nextPathname : '/');
+                  redirect(
+                    location.state ? (location.state as any).nextPathname : '/'
+                  );
                 }
                 setLoading(false);
               }}
               fullWidth
               sx={{
                 justifyContent: 'space-evenly',
-
               }}
             >
               <GoogleIcon />
-              Log in with google
-              {
-                // TODO i18n ^^^
-              }
+              {translate('auth.google')}
             </Button>
           </Box>
           <Box sx={{ padding: '1em 1em 0 1em' }}>
-            <Divider>OR</Divider>
-            {
-              // TODO i18n ^^^
-            }
+            <Divider>{translate('conditionals.or')}</Divider>
           </Box>
           <Box sx={{ padding: '0 1em 1em 1em' }}>
             <Box sx={{ marginTop: '1em' }}>
@@ -136,7 +131,7 @@ const LoginPage: React.FC = () => {
                 type="email"
                 autoFocus
                 source="username"
-                label={translate('ra.auth.username')}
+                label={translate('auth.email')}
                 autoComplete="username"
                 disabled={loading}
                 validate={required()}
@@ -158,7 +153,7 @@ const LoginPage: React.FC = () => {
           <CardActions sx={{ padding: '0 1em 1em 1em' }}>
             <Stack
               sx={{
-                width: '100%'
+                width: '100%',
               }}
               gap={1}
             >
@@ -169,9 +164,7 @@ const LoginPage: React.FC = () => {
                 disabled={loading}
                 fullWidth
               >
-                {loading && (
-                  <CircularProgress size={25} thickness={2} />
-                )}
+                {loading && <CircularProgress size={25} thickness={2} />}
                 {translate('ra.auth.sign_in')}
               </Button>
               <ForgotPasswordButton />
@@ -181,6 +174,6 @@ const LoginPage: React.FC = () => {
       </Box>
     </Form>
   );
-}
+};
 
 export default LoginPage;

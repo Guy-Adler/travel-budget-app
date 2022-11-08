@@ -7,7 +7,7 @@
   ],
   "parserOptions": {
     "ecmaFeatures": {
-        "jsx": true
+      "jsx": true
     },
     "ecmaVersion": 12,
     "sourceType": "module",
@@ -15,17 +15,18 @@
   },
   "plugins": ["react"],
   "rules": {
-    "react/function-component-definition": ["error", {
-      "unnamedComponents": "arrow-function",
-      "namedComponents": "arrow-function"
-    }],
-    "linebreak-style": ["error", "windows"],
-    "react/jsx-filename-extension": [1,
+    "react/function-component-definition": [
+      "error",
       {
-        "extensions": [
-          ".tsx",
-          ".jsx"
-        ]
+        "unnamedComponents": "arrow-function",
+        "namedComponents": "arrow-function"
+      }
+    ],
+    "linebreak-style": ["error", "windows"],
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".tsx", ".jsx"]
       }
     ]
   }

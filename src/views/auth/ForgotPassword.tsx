@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Form,
   required,
@@ -14,7 +14,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import CircularProgress from '@mui/material/CircularProgress';
-import supabase from "../../providers/supabase";
+import supabase from '../../providers/supabase';
 
 const AlertDialog = () => {
   const [open, setOpen] = useState(false);
@@ -24,16 +24,17 @@ const AlertDialog = () => {
 
   const handleSubmit = async ({ email }: { email?: string }) => {
     setLoading(true);
-    const { error } = await supabase.auth.api.resetPasswordForEmail(email ?? '');
+    const { error } = await supabase.auth.api.resetPasswordForEmail(
+      email ?? ''
+    );
     setLoading(false);
     setOpen(false);
     if (error) {
       throw new Error(`(${error.status}): ${error.message}`);
     }
-    notify('Login link sent successfully!\nAfter clicking the link, go to your profile to reset your password.', {
-      // TODO i18n ^^^
+    notify('auth.reset_link_sent', {
       type: 'success',
-      multiLine: true
+      multiLine: true,
     });
   };
 
@@ -47,10 +48,7 @@ const AlertDialog = () => {
         color="secondary"
         fullWidth
       >
-        Forgot Password?
-        {
-          // TODO i18n ^^^
-        }
+        {translate('auth.forgot_password')}
       </Button>
       <Dialog
         open={open}
@@ -60,35 +58,25 @@ const AlertDialog = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Send Password Reset?</DialogTitle>
-        {
-          // TODO i18n ^^^
-        }
+        <DialogTitle id="alert-dialog-title">
+          {translate('auth.send_password_reset')}
+        </DialogTitle>
         <Form onSubmit={handleSubmit} noValidate>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              A temporary login link will be sent to the following email:
-              {
-                // TODO i18n ^^^
-              }
+              {translate('auth.password_reset_alert_dialog_description')}
             </DialogContentText>
             <TextInput
-                type="email"
-                autoFocus
-                source="email"
-                autoComplete="username"
-                disabled={loading}
-                validate={[required(), emailValidator()]}
-                fullWidth
-                variant="outlined"
-                // remove the label (it's redundant)
-                aria-label="email"
-                label={false}
-                sx={{
-                  '& legend': { display: 'none' },
-                  '& fieldset': { top: 0 },
-                }}              
-              />
+              type="email"
+              autoFocus
+              source="email"
+              autoComplete="username"
+              disabled={loading}
+              validate={[required(), emailValidator()]}
+              fullWidth
+              variant="outlined"
+              label="auth.email"
+            />
           </DialogContent>
           <DialogActions>
             <Button
@@ -97,27 +85,22 @@ const AlertDialog = () => {
               }}
             >
               {translate('ra.action.cancel')}
-              {
-                // TODO i18n ^^^
-              }
             </Button>
-            <Button
-              type="submit"
-              color="primary"
-              autoFocus
-              disabled={loading}
-            >
-              Send Email
-              {
-                // TODO i18n ^^^
-              }
-              {loading && <CircularProgress size={25} thickness={5} sx={{ marginBottom: 1}} />}
+            <Button type="submit" color="primary" autoFocus disabled={loading}>
+              {translate('auth.send_reset_link')}
+              {loading && (
+                <CircularProgress
+                  size={25}
+                  thickness={5}
+                  sx={{ marginBottom: 1 }}
+                />
+              )}
             </Button>
           </DialogActions>
         </Form>
       </Dialog>
     </>
   );
-}
+};
 
 export default AlertDialog;

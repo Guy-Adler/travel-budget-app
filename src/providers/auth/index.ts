@@ -7,7 +7,7 @@ export interface SupabaseAuthProvider extends AuthProvider {
   setPassword: (params: SetPasswordParams) => Promise<void>;
 }
 
-export type LoginCredentials = { username: string, password: string };
+export type LoginCredentials = { username: string; password: string };
 
 class CheckAuthError extends Error {
   redirectTo: string;
@@ -18,13 +18,18 @@ class CheckAuthError extends Error {
   }
 }
 
-const getInitialsAvatarUrl = (first_name: string | undefined, last_name: string | undefined): string | undefined => {
+const getInitialsAvatarUrl = (
+  first_name: string | undefined,
+  last_name: string | undefined
+): string | undefined => {
   if ((first_name?.length ?? 0) + (last_name?.length ?? 0) > 0) {
     // we can make at least 1 letter in the initials
-    return `https://avatars.dicebear.com/api/initials/${first_name?.[0] ?? ''}${last_name?.[0] ?? ''}.svg`;
+    return `https://avatars.dicebear.com/api/initials/${first_name?.[0] ?? ''}${
+      last_name?.[0] ?? ''
+    }.svg`;
   }
   return undefined;
-}
+};
 
 export const supabaseAuthProvider: SupabaseAuthProvider = {
   async login({ username: email, password }: LoginCredentials) {
@@ -55,15 +60,15 @@ export const supabaseAuthProvider: SupabaseAuthProvider = {
   },
   async setPassword({ password }: SetPasswordParams) {
     const accessToken = client.auth.session()?.access_token;
-  
+
     if (accessToken === undefined) {
       throw new CheckAuthError('ra.notification.logged_out', '/login');
     }
-  
+
     const { error } = await client.auth.api.updateUser(accessToken, {
       password,
     });
-  
+
     if (error) {
       // throw error;
       throw new CheckAuthError(`(${error.status}) ${error.message}`, '/login');
@@ -76,23 +81,32 @@ export const supabaseAuthProvider: SupabaseAuthProvider = {
       throw new Error();
     }
 
-    const { data, error } = await client.from<Schema['profiles']>('profiles').select('first_name, last_name').match({ id: user.id }).single();
+    const { data, error } = await client
+      .from<Schema['profiles']>('profiles')
+      .select('first_name, last_name')
+      .match({ id: user.id })
+      .single();
 
     if (!data || error) {
       throw new Error(`(${error.code}): ${error.message}`);
     }
 
-
-    const { data: files, error: err } = await client.storage.from('avatars').list();
+    const { data: files, error: err } = await client.storage
+      .from('avatars')
+      .list();
     let avatar: string | undefined;
     if (err || files?.length !== 1) {
       avatar = getInitialsAvatarUrl(data.first_name, data.last_name);
     } else {
-      const { data: avatarBuffer, error: e } = await client.storage.from('avatars').download(files[0].name);
+      const { data: avatarBuffer, error: e } = await client.storage
+        .from('avatars')
+        .download(files[0].name);
       if (!avatarBuffer || e) {
         avatar = getInitialsAvatarUrl(data.first_name, data.last_name);
       } else {
-        avatar = `data:${avatarBuffer.type};base64,${Buffer.from(await avatarBuffer.arrayBuffer()).toString('base64')}`;
+        avatar = `data:${avatarBuffer.type};base64,${Buffer.from(
+          await avatarBuffer.arrayBuffer()
+        ).toString('base64')}`;
       }
     }
 
@@ -100,6 +114,6 @@ export const supabaseAuthProvider: SupabaseAuthProvider = {
       id: user.id,
       avatar,
       fullName: `${data?.first_name} ${data?.last_name}`.trim() || undefined,
-    }
-  }
+    };
+  },
 };
