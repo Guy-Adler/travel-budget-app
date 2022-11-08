@@ -20,7 +20,7 @@ import Stack from '@mui/material/Stack';
 import LockIcon from '@mui/icons-material/Lock';
 import GoogleIcon from '@mui/icons-material/Google';
 import ForgotPasswordButton from './ForgotPassword';
-import client from '../../providers/supabase';
+import client from '@/src/providers/supabase';
 
 interface FormValues {
   username?: string;

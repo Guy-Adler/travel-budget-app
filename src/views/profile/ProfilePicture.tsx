@@ -5,7 +5,8 @@ import {
   ImageInput,
   ImageField,
   useTranslate,
-  // useNotify,
+  useNotify,
+  UserIdentity
 } from 'react-admin';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
@@ -16,26 +17,41 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import classNames from './ProfilePicture.module.scss';
-
+import client from '@/src/providers/supabase';
+import type { Schema } from '@/src/types/schema';
 
 interface ProfilePictureProps {
   size: string | number;
-  url: string | undefined;
+  identity: UserIdentity;
 }
 
 
-const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, url }) => {
+const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
   const [open, setOpen] = useState(false);
   const [loading] = useState(false);
   
+  const notify = useNotify();
   const translate = useTranslate();
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     // TODO handle file upload to supabase storage + modify profiles.avatar_url
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     // TODO delete the file from supabase + set profiles.avatar_url to NULL
+    const { error, count } = await client.from<Schema['profiles']>('profiles').update({
+      id: identity.id as `${string}-${string}-${string}-${string}-${string}`,
+      avatar_url: undefined
+    });
+
+    if (error || count !== 1) {
+      notify('profile.errors.could_not_delete_picture', {
+        type: 'error'
+      });
+      // return;
+    }
+
+    // await client.storage.from('avatars').remove()
   };
 
   return (
@@ -56,7 +72,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, url }) => {
           className={classNames.profilePicture}
           alt="profile picture"
           sx={{ width: size, height: size, objectFit: 'cover' }}
-          src={url}
+          src={identity?.avatar}
         />
       </div>
       <Dialog

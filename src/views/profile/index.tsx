@@ -32,7 +32,7 @@ const Profile = () => {
           {
             isLoading
             ? <Skeleton variant="circular" width="5rem" height="5rem" animation="wave" />
-            : <ProfilePicture size="5rem" url={identity?.avatar} />
+            : <ProfilePicture size="5rem" identity={identity} />
           }
           {/* TODO add first, last name edit fields */}
           {/* TODO add password reset field */}

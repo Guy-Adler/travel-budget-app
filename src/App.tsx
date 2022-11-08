@@ -29,9 +29,7 @@ const App = () => (
     <CustomRoutes>
       <Route path="/profile" element={<Profile />} />
     </CustomRoutes>
-    <Resource name="profiles" list={ListGuesser} />
     <Resource name="trips" list={ListGuesser} />
-    <Resource name="shares" list={ListGuesser} />
     <Resource name="expenses" list={ListGuesser} />
   </Admin>
 );

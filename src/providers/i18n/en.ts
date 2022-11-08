@@ -18,6 +18,9 @@ const customEnglishMessages: TranslationMessages = {
   profile: {
     title: 'Profile',
     picture_dialog_title: 'Edit or Delete Your Profile Picture',
+    errors: {
+      could_not_delete_picture: 'An error occurred while deleting your profile picture.\n Please try again later.'
+    }
   }
 };
 
