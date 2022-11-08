@@ -9,7 +9,6 @@ import {
   useNotify,
   useRedirect,
 } from 'react-admin';
-import ForgotPasswordButton from './ForgotPassword';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -20,6 +19,7 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import LockIcon from '@mui/icons-material/Lock';
 import GoogleIcon from '@mui/icons-material/Google';
+import ForgotPasswordButton from './ForgotPassword';
 import client from './providers/supabase';
 
 interface FormValues {

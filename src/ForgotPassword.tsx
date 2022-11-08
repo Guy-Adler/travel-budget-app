@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   Form,
   required,
-  email,
+  email as emailValidator,
   TextInput,
   useTranslate,
   useNotify,
@@ -16,7 +16,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import CircularProgress from '@mui/material/CircularProgress';
 import supabase from "./providers/supabase";
 
-export default function AlertDialog() {
+const AlertDialog = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const notify = useNotify();
@@ -28,7 +28,7 @@ export default function AlertDialog() {
     setLoading(false);
     setOpen(false);
     if (error) {
-      throw error;
+      throw new Error(`(${error.status}): ${error.message}`);
     }
     notify('Login link sent successfully!\nAfter clicking the link, go to your profile to reset your password.', {
       // TODO i18n ^^^
@@ -78,7 +78,7 @@ export default function AlertDialog() {
                 source="email"
                 autoComplete="username"
                 disabled={loading}
-                validate={[required(), email()]}
+                validate={[required(), emailValidator()]}
                 fullWidth
                 variant="outlined"
                 // remove the label (it's redundant)
@@ -119,3 +119,5 @@ export default function AlertDialog() {
     </>
   );
 }
+
+export default AlertDialog;
