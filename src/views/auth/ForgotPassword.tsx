@@ -14,7 +14,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import CircularProgress from '@mui/material/CircularProgress';
-import supabase from "./providers/supabase";
+import supabase from "../../providers/supabase";
 
 const AlertDialog = () => {
   const [open, setOpen] = useState(false);
