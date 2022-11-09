@@ -18,13 +18,22 @@ const customEnglishMessages: TranslationMessages = {
   profile: {
     title: 'Profile',
     picture_dialog_title: 'Edit or Delete Your Profile Picture',
+    deleted_picture: 'Deleted profile picture successfully.',
+    uploaded_picture: 'Uploaded profile picture successfully.',
+    personal_data_title: 'Edit Personal Data',
+
     errors: {
       could_not_delete_picture:
         'An error occurred while deleting your profile picture.\n Please try again later.',
       could_not_upload_picture:
         'An error occurred while uploading your profile picture.\n Please try again later.',
-      deleted_picture: 'Deleted profile picture successfully.',
-      uploaded_picture: 'Uploaded profile picture successfully.',
+    },
+  },
+  resources: {
+    profiles: {
+      first_name: 'First Name',
+      last_name: 'Last Name',
+      email: 'Email',
     },
   },
 };

@@ -4,6 +4,9 @@ import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import { useTranslate, useGetIdentity, useLogout, Title } from 'react-admin';
 import ProfilePicture from './ProfilePicture';
+import NameForm, { NameFormSkeleton } from './NameForm';
+
+const AVATAR_SIZE = '8rem';
 
 const Profile = () => {
   const translate = useTranslate();
@@ -21,20 +24,31 @@ const Profile = () => {
         sx={{
           margin: '1em',
           display: 'flex',
+          flexDirection: 'column',
           justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         {isLoading ? (
           <Skeleton
             variant="circular"
-            width="5rem"
-            height="5rem"
+            width={AVATAR_SIZE}
+            height={AVATAR_SIZE}
             animation="wave"
           />
         ) : (
-          <ProfilePicture size="5rem" identity={identity} />
+          <ProfilePicture size={AVATAR_SIZE} identity={identity} />
         )}
-        {/* TODO add first, last name edit fields */}
+        <hr style={{ width: '80%' }} />
+        {identity ? (
+          <NameForm id={identity.id} />
+        ) : (
+          // should never happen, but just in case
+          <Skeleton animation="wave" variant="rounded">
+            <NameFormSkeleton />
+          </Skeleton>
+        )}
+        <hr style={{ width: '80%' }} />
         {/* TODO add password reset field */}
       </Box>
     </Card>
