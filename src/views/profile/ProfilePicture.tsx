@@ -99,7 +99,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
       }
     }
     if (sendNotification) {
-      notify('profile.errors.deleted_picture', {
+      notify('profile.deleted_picture', {
         type: 'success',
       });
     }
@@ -145,7 +145,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
       });
       return;
     }
-    notify('profile.errors.uploaded_picture', {
+    notify('profile.uploaded_picture', {
       type: 'success',
     });
   };
