@@ -187,6 +187,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
               <ImageInput
                 source="picture"
                 accept="image/*"
+                maxSize={5 * 10 ** 7} // 5MB
                 sx={{
                   '& .RaFileInput-removeButton button': {
                     display: 'none', // hide the delete button (no reason for it to be there)
@@ -204,6 +205,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
               >
                 <ImageField source="src" title="title" />
               </ImageInput>
+              <p>No more than 5MB</p>
             </DialogContent>
             <DialogActions>
               <Button
