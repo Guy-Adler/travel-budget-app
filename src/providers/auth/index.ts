@@ -93,7 +93,9 @@ export const supabaseAuthProvider: SupabaseAuthProvider = {
 
     return {
       id: user.id,
-      avatar: data?.avatar_url || getInitialsAvatarUrl(data.first_name, data.last_name),
+      avatar:
+        data?.avatar_url ||
+        getInitialsAvatarUrl(data.first_name, data.last_name),
       fullName: `${data?.first_name} ${data?.last_name}`.trim() || undefined,
     };
   },

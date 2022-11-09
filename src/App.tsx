@@ -12,7 +12,18 @@ const resources = {
   profiles: ['id', 'email', 'first_name', 'last_name', 'avatar_url'],
   trips: ['id', 'created_at', 'updated_at', 'updated_by', 'owner', 'name'],
   shares: ['id', 'trip_id', 'user_id', 'can_edit'],
-  expenses: ['id', 'trip_id', 'created_at', 'updated_at', 'updated_by', 'name', 'amount', 'currency', 'purchase_date', 'category']
+  expenses: [
+    'id',
+    'trip_id',
+    'created_at',
+    'updated_at',
+    'updated_by',
+    'name',
+    'amount',
+    'currency',
+    'purchase_date',
+    'category',
+  ],
 };
 
 const App = () => (

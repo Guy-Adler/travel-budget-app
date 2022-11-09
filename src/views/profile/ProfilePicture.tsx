@@ -153,17 +153,19 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
   return (
     <>
       <div className={classNames.container}>
-        {identity && <div className={classNames.overlay}>
-          <IconButton
-            onClick={() => {
-              setOpen(true);
-            }}
-            className={classNames.overlay_btn}
-            sx={{ width: size, height: size }}
-          >
-            <EditIcon sx={{ color: 'white' }} />
-          </IconButton>
-        </div>}
+        {identity && (
+          <div className={classNames.overlay}>
+            <IconButton
+              onClick={() => {
+                setOpen(true);
+              }}
+              className={classNames.overlay_btn}
+              sx={{ width: size, height: size }}
+            >
+              <EditIcon sx={{ color: 'white' }} />
+            </IconButton>
+          </div>
+        )}
         <Avatar
           className={classNames.profilePicture}
           alt="profile picture"
@@ -172,58 +174,65 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
         />
       </div>
 
-      {identity && <Dialog
-        open={open}
-        onClose={() => {
-          setOpen(false);
-        }}
-      >
-        <DialogTitle>{translate('profile.picture_dialog_title')}</DialogTitle>
-        <Form onSubmit={handleUpload}>
-          <DialogContent>
-            <ImageInput
-              source="picture"
-              accept="image/*"
-              sx={{
-                '& .RaFileInput-removeButton button': {
-                  display: 'none', // hide the delete button (no reason for it to be there)
-                },
-                '& .previews': {
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                },
-                '& legend': { display: 'none' },
-                '& fieldset': { top: 0 },
-              }}
-              label={false}
-              validate={required()}
-            >
-              <ImageField source="src" title="title" />
-            </ImageInput>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => {
-                setOpen(false);
-              }}
-            >
-              {translate('ra.action.cancel')}
-            </Button>
-            <Button
-              color="error"
-              autoFocus
-              disabled={loading || isDefaultAvatar(identity.avatar)}
-              onClick={() => handleDelete(true)}
-            >
-              {translate('ra.action.delete')}
-            </Button>
-            <Button type="submit" color="primary" autoFocus disabled={loading}>
-              {translate('ra.action.save')}
-            </Button>
-          </DialogActions>
-        </Form>
-      </Dialog>}
+      {identity && (
+        <Dialog
+          open={open}
+          onClose={() => {
+            setOpen(false);
+          }}
+        >
+          <DialogTitle>{translate('profile.picture_dialog_title')}</DialogTitle>
+          <Form onSubmit={handleUpload}>
+            <DialogContent>
+              <ImageInput
+                source="picture"
+                accept="image/*"
+                sx={{
+                  '& .RaFileInput-removeButton button': {
+                    display: 'none', // hide the delete button (no reason for it to be there)
+                  },
+                  '& .previews': {
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  },
+                  '& legend': { display: 'none' },
+                  '& fieldset': { top: 0 },
+                }}
+                label={false}
+                validate={required()}
+              >
+                <ImageField source="src" title="title" />
+              </ImageInput>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => {
+                  setOpen(false);
+                }}
+              >
+                {translate('ra.action.cancel')}
+              </Button>
+              <Button
+                color="error"
+                autoFocus
+                disabled={loading || isDefaultAvatar(identity.avatar)}
+                onClick={() => handleDelete(true)}
+              >
+                {translate('ra.action.delete')}
+              </Button>
+              <Button
+                type="submit"
+                color="primary"
+                autoFocus
+                disabled={loading}
+              >
+                {translate('ra.action.save')}
+              </Button>
+            </DialogActions>
+          </Form>
+        </Dialog>
+      )}
     </>
   );
 };

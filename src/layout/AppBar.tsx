@@ -1,11 +1,7 @@
 import React from 'react';
 import { AppBar, Logout, UserMenu, useTranslate } from 'react-admin';
 import { Link } from 'react-router-dom';
-import {
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material';
+import { MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import ProfileIcon from '@mui/icons-material/ManageAccounts';
 
 const ProfileMenu = React.forwardRef((props, ref) => {
@@ -17,7 +13,7 @@ const ProfileMenu = React.forwardRef((props, ref) => {
       ref={ref}
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
-      to='/profile'
+      to="/profile"
     >
       <ListItemIcon>
         <ProfileIcon />
@@ -26,7 +22,7 @@ const ProfileMenu = React.forwardRef((props, ref) => {
     </MenuItem>
   );
 });
-ProfileMenu.displayName = "ProfileMenu";
+ProfileMenu.displayName = 'ProfileMenu';
 
 const CustomUserMenu: React.FC = () => (
   <UserMenu>
