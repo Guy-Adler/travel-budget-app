@@ -6,7 +6,7 @@ import {
   ImageField,
   useTranslate,
   useNotify,
-  UserIdentity
+  UserIdentity,
 } from 'react-admin';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
@@ -25,11 +25,15 @@ interface ProfilePictureProps {
   identity: UserIdentity;
 }
 
+const isDefaultAvatar = (avatar: string | undefined): boolean => {
+  if (avatar === undefined) return true;
+  return avatar.startsWith('https://avatars.dicebear.com/api/initials/');
+};
 
 const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
   const [open, setOpen] = useState(false);
   const [loading] = useState(false);
-  
+
   const notify = useNotify();
   const translate = useTranslate();
 
@@ -38,20 +42,52 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
   };
 
   const handleDelete = async () => {
-    // TODO delete the file from supabase + set profiles.avatar_url to NULL
-    const { error, count } = await client.from<Schema['profiles']>('profiles').update({
-      id: identity.id as `${string}-${string}-${string}-${string}-${string}`,
-      avatar_url: undefined
-    });
+    // remove profile picture link from user profile
+    const { error: err, count } = await client
+      .from<Schema['profiles']>('profiles')
+      .update(
+        { 
+          avatar_url: null,
+        },
+        {
+          count: 'exact',
+        }
+      )
+      .eq('id', identity.id as `${string}-${string}-${string}-${string}-${string}`);
 
-    if (error || count !== 1) {
+    if (err || count !== 1) {
       notify('profile.errors.could_not_delete_picture', {
-        type: 'error'
+        type: 'error',
+        multiLine: true,
       });
-      // return;
+      return;
     }
+    // get list of profile pictures with the user's name (RLS only allows files named with the uid of the user to be accessed.)
+    const { data, error } = await client.storage.from('avatars').list();
 
-    // await client.storage.from('avatars').remove()
+    if (error) {
+      notify('profile.errors.could_not_delete_picture', {
+        type: 'error',
+        multiLine: true,
+      });
+      return;
+    }
+    // delete all the files (could maybe be more than 1?) of the user
+    if ((data?.length ?? 0) > 0) {
+      const { error: e } = await client.storage
+        .from('avatars')
+        .remove(data?.map((file) => file.name) ?? []);
+      if (e) {
+        notify('profile.errors.could_not_delete_picture', {
+          type: 'error',
+          multiLine: true,
+        });
+        return;
+      }
+    }
+    notify('profile.errors.deleted_picture', {
+      type: 'success',
+    });
   };
 
   return (
@@ -87,19 +123,19 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
             <ImageInput
               source="picture"
               accept="image/*"
-              sx={{ 
+              sx={{
                 '& .RaFileInput-removeButton button': {
-                  display: 'none' // hide the delete button (no reason for it to be there)
+                  display: 'none', // hide the delete button (no reason for it to be there)
                 },
                 '& .previews': {
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
                 },
                 '& legend': { display: 'none' },
                 '& fieldset': { top: 0 },
               }}
-              label={false} 
+              label={false}
             >
               <ImageField source="src" title="title" />
             </ImageInput>
@@ -112,7 +148,12 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
             >
               {translate('ra.action.cancel')}
             </Button>
-            <Button color="error" autoFocus disabled={loading} onClick={handleDelete}>
+            <Button
+              color="error"
+              autoFocus
+              disabled={loading || isDefaultAvatar(identity.avatar)}
+              onClick={handleDelete}
+            >
               {translate('ra.action.delete')}
             </Button>
             <Button type="submit" color="primary" autoFocus disabled={loading}>
@@ -122,7 +163,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
         </Form>
       </Dialog>
     </>
-  )
+  );
 };
 
 export default ProfilePicture;

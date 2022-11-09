@@ -36,10 +36,10 @@ type Currency = `${Alphabet}${Alphabet}${Alphabet}`;
 export type Schema = {
   profiles: {
     id: UUID;
-    email?: string;
-    first_name?: string;
-    last_name?: string;
-    avatar_url?: string;
+    email: string | null;
+    first_name: string | null;
+    last_name: string | null;
+    avatar_url: string | null;
   };
   trips: {
     id: number;
@@ -64,8 +64,8 @@ export type Schema = {
     name: string;
     amount: number;
     currency: Currency;
-    purchase_date?: TextDate;
-    category?: string;
+    purchase_date: TextDate | null;
+    category: string | null;
   };
 };
 

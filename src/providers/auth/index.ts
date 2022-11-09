@@ -19,8 +19,8 @@ class CheckAuthError extends Error {
 }
 
 const getInitialsAvatarUrl = (
-  first_name: string | undefined,
-  last_name: string | undefined
+  first_name: string | null,
+  last_name: string | null
 ): string | undefined => {
   if ((first_name?.length ?? 0) + (last_name?.length ?? 0) > 0) {
     // we can make at least 1 letter in the initials
