@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   Form,
-  // required,
+  required,
   ImageInput,
   ImageField,
   useTranslate,
@@ -22,7 +22,14 @@ import type { Schema } from '@/src/types/schema';
 
 interface ProfilePictureProps {
   size: string | number;
-  identity: UserIdentity;
+  identity: UserIdentity | undefined;
+}
+interface FormValues {
+  picture?: {
+    rawFile: File;
+    src: string;
+    title: string;
+  };
 }
 
 const isDefaultAvatar = (avatar: string | undefined): boolean => {
@@ -37,39 +44,43 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
   const notify = useNotify();
   const translate = useTranslate();
 
-  const handleUpload = async () => {
-    // TODO handle file upload to supabase storage + modify profiles.avatar_url
-  };
-
-  const handleDelete = async () => {
+  const handleDelete = async (sendNotification?: boolean) => {
+    if (identity === undefined) return;
     // remove profile picture link from user profile
     const { error: err, count } = await client
       .from<Schema['profiles']>('profiles')
       .update(
-        { 
+        {
           avatar_url: null,
         },
         {
           count: 'exact',
         }
       )
-      .eq('id', identity.id as `${string}-${string}-${string}-${string}-${string}`);
+      .eq(
+        'id',
+        identity.id as `${string}-${string}-${string}-${string}-${string}`
+      );
 
     if (err || count !== 1) {
-      notify('profile.errors.could_not_delete_picture', {
-        type: 'error',
-        multiLine: true,
-      });
+      if (sendNotification) {
+        notify('profile.errors.could_not_delete_picture', {
+          type: 'error',
+          multiLine: true,
+        });
+      }
       return;
     }
     // get list of profile pictures with the user's name (RLS only allows files named with the uid of the user to be accessed.)
     const { data, error } = await client.storage.from('avatars').list();
 
     if (error) {
-      notify('profile.errors.could_not_delete_picture', {
-        type: 'error',
-        multiLine: true,
-      });
+      if (sendNotification) {
+        notify('profile.errors.could_not_delete_picture', {
+          type: 'error',
+          multiLine: true,
+        });
+      }
       return;
     }
     // delete all the files (could maybe be more than 1?) of the user
@@ -78,14 +89,63 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
         .from('avatars')
         .remove(data?.map((file) => file.name) ?? []);
       if (e) {
-        notify('profile.errors.could_not_delete_picture', {
-          type: 'error',
-          multiLine: true,
-        });
+        if (sendNotification) {
+          notify('profile.errors.could_not_delete_picture', {
+            type: 'error',
+            multiLine: true,
+          });
+        }
         return;
       }
     }
-    notify('profile.errors.deleted_picture', {
+    if (sendNotification) {
+      notify('profile.errors.deleted_picture', {
+        type: 'success',
+      });
+    }
+  };
+
+  const handleUpload = async ({ picture }: FormValues) => {
+    if (identity === undefined) return;
+    if (!picture) return;
+
+    // delete the old pic, if it exists
+    await handleDelete(false);
+
+    // upload the picture
+    const fileName = `${identity.id}.${picture.title.split('.').pop()}`; // get the file name to be uid.extension;
+    const { error } = await client.storage
+      .from('avatars')
+      .upload(fileName, picture.rawFile);
+    if (error) {
+      notify('profile.errors.could_not_upload_picture', {
+        type: 'error',
+        multiLine: true,
+      });
+      return;
+    }
+
+    // update profile record with new URL
+    const { publicURL } = client.storage.from('avatars').getPublicUrl(fileName);
+
+    const { error: err, data } = await client
+      .from<Schema['profiles']>('profiles')
+      .update({
+        avatar_url: publicURL,
+      })
+      .eq(
+        'id',
+        identity.id as `${string}-${string}-${string}-${string}-${string}`
+      );
+
+    if (err || data.length !== 1 || data[0].avatar_url === null) {
+      notify('profile.errors.could_not_upload_picture', {
+        type: 'error',
+        multiLine: true,
+      });
+      return;
+    }
+    notify('profile.errors.uploaded_picture', {
       type: 'success',
     });
   };
@@ -93,7 +153,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
   return (
     <>
       <div className={classNames.container}>
-        <div className={classNames.overlay}>
+        {identity && <div className={classNames.overlay}>
           <IconButton
             onClick={() => {
               setOpen(true);
@@ -103,7 +163,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
           >
             <EditIcon sx={{ color: 'white' }} />
           </IconButton>
-        </div>
+        </div>}
         <Avatar
           className={classNames.profilePicture}
           alt="profile picture"
@@ -111,7 +171,8 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
           src={identity?.avatar}
         />
       </div>
-      <Dialog
+
+      {identity && <Dialog
         open={open}
         onClose={() => {
           setOpen(false);
@@ -136,6 +197,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
                 '& fieldset': { top: 0 },
               }}
               label={false}
+              validate={required()}
             >
               <ImageField source="src" title="title" />
             </ImageInput>
@@ -152,7 +214,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
               color="error"
               autoFocus
               disabled={loading || isDefaultAvatar(identity.avatar)}
-              onClick={handleDelete}
+              onClick={() => handleDelete(true)}
             >
               {translate('ra.action.delete')}
             </Button>
@@ -161,7 +223,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
             </Button>
           </DialogActions>
         </Form>
-      </Dialog>
+      </Dialog>}
     </>
   );
 };
