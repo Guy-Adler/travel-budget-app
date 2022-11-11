@@ -16,6 +16,7 @@ const Profile = () => {
 
   if (error) {
     logout();
+    return null;
   }
 
   return (

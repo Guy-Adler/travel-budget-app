@@ -4,6 +4,7 @@ import {
   Form,
   required,
   TextInput,
+  PasswordInput,
   useTranslate,
   useLogin,
   useNotify,
@@ -139,10 +140,8 @@ const LoginPage: React.FC = () => {
               />
             </Box>
             <Box sx={{ marginTop: '1em' }}>
-              <TextInput
+              <PasswordInput
                 source="password"
-                label={translate('ra.auth.password')}
-                type="password"
                 autoComplete="current-password"
                 disabled={loading}
                 validate={required()}

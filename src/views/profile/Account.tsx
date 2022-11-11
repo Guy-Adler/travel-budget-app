@@ -1,17 +1,16 @@
 import React, { useCallback } from 'react';
-import Stack from '@mui/material/Stack';
-// import { styled, Theme } from '@mui/material/styles';
-// import useMediaQuery from '@mui/material/useMediaQuery';
 import {
-  Form,
   BooleanInput,
+  PasswordInput,
   EditBase,
   Identifier,
-  // useTranslate,
   useSaveContext,
+  minLength,
+  useLogout,
+  useNotify,
 } from 'react-admin';
-import LabelInput from './LabelInput';
-import FormTitle from './FormTitle';
+import Section from './Section';
+import client from '@/src/providers/supabase';
 
 interface AccountProps {
   id: Identifier;
@@ -19,63 +18,94 @@ interface AccountProps {
 
 interface FormValues {
   can_be_shared?: boolean;
+  password?: string;
+  confirmPassword?: string;
 }
 
+const passwordValidator = minLength(6);
+
+const confirmPasswordValidator = [
+  (value: FormValues['confirmPassword'], allValues: FormValues) => {
+    const { password } = allValues;
+    if (value !== password) {
+      return 'auth.validation.confirm_password';
+    }
+    return undefined;
+  },
+];
+
 export const AccountSkeleton: React.FC = () => {
-  // const translate = useTranslate();
   const saveContext = useSaveContext();
+  const logout = useLogout();
+  const notify = useNotify();
 
   const handleSubmit = useCallback(
     async (data: FormValues) => {
-      console.log(data);
       if (saveContext.save) {
-        saveContext.save(data);
+        // extract password, confirmPassword from the UPDATE call to the server
+        const { password, confirmPassword, ...rest } = data;
+        saveContext.save(rest);
+
+        // update password
+        const session = client.auth.session();
+        if (session === null) {
+          logout();
+          return;
+        }
+
+        const { error } = await client.auth.api.updateUser(
+          session.access_token,
+          {
+            password,
+          }
+        );
+
+        if (error) {
+          notify('auth.reset_password_error', {
+            type: 'warning',
+            multiLine: true,
+          });
+        } else {
+          notify('auth.reset_password_success', {
+            type: 'success',
+          });
+        }
       }
     },
-    [saveContext]
+    [saveContext, logout, notify]
   );
-
   return (
-    <Stack width="100%" padding="0 2rem">
-      <Form onSubmit={handleSubmit}>
-        <Stack
-          direction="row"
-          sx={{
-            alignItems: 'baseline',
-            width: {
-              xs: 'reset',
-              //          padding  label  gap   input
-              sm: 'calc(1rem + 20% + 10% + 20%)',
-            },
-            justifyContent: {
-              xs: 'center',
-              sm: 'space-between',
-            },
-          }}
-        >
-          <FormTitle
-            title="profile.account.title"
-            description="profile.account.description"
+    <Section
+      scope="account"
+      onSubmit={handleSubmit}
+      fields={{
+        can_be_shared: <BooleanInput source="can_be_shared" label={false} />,
+        password: (
+          <PasswordInput
+            source="password"
+            autoComplete="new-password"
+            label={false}
+            validate={passwordValidator}
           />
-        </Stack>
-        <Stack
-          sx={{
-            gap: '1.5rem',
-            paddingLeft: {
-              xs: 0,
-              sm: '1rem',
-            },
-          }}
-        >
-          <LabelInput
-            label="resources.profiles.can_be_shared"
-            helper="profile.account.fields.can_be_shared.description"
-          >
-            <BooleanInput source="can_be_shared" label={false} />
-          </LabelInput>
-        </Stack>
-      </Form>
-    </Stack>
+        ),
+        confirmPassword: (
+          <PasswordInput
+            source="confirmPassword"
+            autoComplete="new-password"
+            label={false}
+            validate={confirmPasswordValidator}
+          />
+        ),
+      }}
+      labels={{
+        password: {
+          label: 'Password',
+        },
+        confirmPassword: {
+          label: 'Confirm Password',
+        },
+      }}
+    />
   );
 };
 

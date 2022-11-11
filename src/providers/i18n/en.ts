@@ -13,6 +13,12 @@ const customEnglishMessages: TranslationMessages = {
       'A temporary login link will be sent to the following email:',
     reset_link_sent:
       'Login link sent successfully!\nAfter clicking the link, go to your profile to reset your password.',
+    validation: {
+      confirm_password: 'Passwords do not match',
+    },
+    reset_password_error:
+      'An error occurred while resetting your password.\nPlease try again later.',
+    reset_password_success: 'Password changed successfully!',
   },
   or: 'OR',
   profile: {
@@ -40,6 +46,12 @@ const customEnglishMessages: TranslationMessages = {
       fields: {
         can_be_shared: {
           description: 'Allow other users to share their trips with you.',
+        },
+        password: {
+          description: 'Reset your password to a new password.',
+        },
+        confirmPassword: {
+          description: 'Confirm the password to reset to.',
         },
       },
     },
