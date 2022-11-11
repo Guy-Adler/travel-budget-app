@@ -26,6 +26,10 @@ const Profile = () => {
           display: 'flex',
           flexDirection: 'column',
           gap: '2em',
+          alignItems: {
+            xs: 'center',
+            sm: 'normal',
+          },
         }}
       >
         {isLoading ? (

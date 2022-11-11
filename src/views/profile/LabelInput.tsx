@@ -1,6 +1,8 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
+import { Theme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTranslateLabel } from 'react-admin';
 
 interface LabelInputProps extends React.PropsWithChildren {
@@ -10,9 +12,28 @@ interface LabelInputProps extends React.PropsWithChildren {
 
 const LabelInput: React.FC<LabelInputProps> = ({ label, helper, children }) => {
   const translate = useTranslateLabel();
+  const isSmall = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+
   return (
-    <Stack direction="row" width="100%" gap="10%" alignItems="baseline">
-      <Stack width="20%">
+    <Stack
+      direction={isSmall ? 'column' : 'row'}
+      sx={{
+        width: "100%",
+        gap: "10%",
+        alignItems: {
+          xs: 'streach',
+          sm: 'baseline',
+        },
+      }}
+    >
+      <Stack
+        sx={{
+          width: {
+            xs: '100%',
+            sm: '20%',
+          },
+        }}
+      >
         <Typography variant="h6">{translate({ label })}</Typography>
         <Typography variant="body1">{translate({ label: helper })}</Typography>
       </Stack>
