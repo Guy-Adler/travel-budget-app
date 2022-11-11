@@ -20,7 +20,24 @@ const customEnglishMessages: TranslationMessages = {
     picture_dialog_title: 'Edit or Delete Your Profile Picture',
     deleted_picture: 'Deleted profile picture successfully.',
     uploaded_picture: 'Uploaded profile picture successfully.',
-    personal_data_title: 'Edit Personal Data',
+    personal_data: {
+      title: 'Personal Data',
+      description: 'Edit or delete your personal data',
+      fields: {
+        first_name: {
+          description:
+            'This information will be displayed in all trips you shared, or have been shared with.',
+        },
+        last_name: {
+          description:
+            'This information will be displayed in all trips you shared, or have been shared with.',
+        },
+      },
+    },
+    personal_data_title: 'Personal Data',
+    personal_data_description: 'Edit or delete your personal data',
+    personal_data_viewable:
+      'This information will be displayed in all trips you shared, or have been shared with.',
     errors: {
       could_not_delete_picture:
         'An error occurred while deleting your profile picture.\n Please try again later.',

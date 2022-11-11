@@ -8,8 +8,10 @@
   color: transparent;
   transition: all 0.3s ease;
   @include object-center;
+  justify-content: flex-start;
   position: relative;
   transition: all 0.3s ease;
+  width: min-content;
 
   .profilePicture {
     position: absolute;

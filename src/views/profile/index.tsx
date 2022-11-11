@@ -25,8 +25,7 @@ const Profile = () => {
           margin: '1em',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
+          gap: '2em',
         }}
       >
         {isLoading ? (
@@ -39,7 +38,6 @@ const Profile = () => {
         ) : (
           <ProfilePicture size={AVATAR_SIZE} identity={identity} />
         )}
-        <hr style={{ width: '80%' }} />
         {identity ? (
           <NameForm id={identity.id} />
         ) : (
@@ -48,7 +46,6 @@ const Profile = () => {
             <NameFormSkeleton />
           </Skeleton>
         )}
-        <hr style={{ width: '80%' }} />
         {/* TODO add password reset field */}
       </Box>
     </Card>
