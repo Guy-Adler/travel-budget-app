@@ -1,6 +1,5 @@
 import React from 'react';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import { styled, Theme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -13,8 +12,9 @@ import {
   useTranslate,
 } from 'react-admin';
 import LabelInput from './LabelInput';
+import FormTitle from './FormTitle';
 
-interface NameFormProps {
+interface PersonalDataProps {
   id: Identifier;
 }
 
@@ -35,7 +35,7 @@ const TextInputNoLabel = styled((props: TextInputProps) => (
 
 const FIELDS = ['first_name', 'last_name'];
 
-export const NameFormSkeleton = () => {
+export const PersonalDataSkeleton = () => {
   const translate = useTranslate();
   const isSmall = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
@@ -57,26 +57,14 @@ export const NameFormSkeleton = () => {
             },
           }}
         >
-          <Stack paddingBottom="1rem">
-            <Typography variant="h5" textAlign={isSmall ? 'center' : undefined}>
-              {translate('profile.personal_data.title')}
-            </Typography>
-            <Typography
-              variant="body1"
-              textAlign={isSmall ? 'center' : undefined}
-            >
-              {translate('profile.personal_data.description')}
-            </Typography>
-          </Stack>
-          {!isSmall && (
-            <Button variant="contained" type="submit" color="primary">
-              {translate('ra.action.save')}
-            </Button>
-          )}
+          <FormTitle
+            title="profile.personal_data.title"
+            description="profile.personal_data.description"
+          />
         </Stack>
         <Stack
           sx={{
-            gap: "1.5rem",
+            gap: '1.5rem',
             paddingLeft: {
               xs: 0,
               sm: '1rem',
@@ -103,10 +91,10 @@ export const NameFormSkeleton = () => {
   );
 };
 
-const NameForm: React.FC<NameFormProps> = ({ id }) => (
+const PersonalData: React.FC<PersonalDataProps> = ({ id }) => (
   <EditBase resource="profiles" id={id} redirect={false}>
-    <NameFormSkeleton />
+    <PersonalDataSkeleton />
   </EditBase>
 );
 
-export default NameForm;
+export default PersonalData;

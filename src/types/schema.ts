@@ -40,6 +40,7 @@ export type Schema = {
     first_name: string | null;
     last_name: string | null;
     avatar_url: string | null;
+    can_be_shared: boolean;
   };
   trips: {
     id: number;

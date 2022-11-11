@@ -18,8 +18,8 @@ const LabelInput: React.FC<LabelInputProps> = ({ label, helper, children }) => {
     <Stack
       direction={isSmall ? 'column' : 'row'}
       sx={{
-        width: "100%",
-        gap: "10%",
+        width: '100%',
+        gap: '10%',
         alignItems: {
           xs: 'streach',
           sm: 'baseline',

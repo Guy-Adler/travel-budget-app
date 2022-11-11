@@ -34,10 +34,15 @@ const customEnglishMessages: TranslationMessages = {
         },
       },
     },
-    personal_data_title: 'Personal Data',
-    personal_data_description: 'Edit or delete your personal data',
-    personal_data_viewable:
-      'This information will be displayed in all trips you shared, or have been shared with.',
+    account: {
+      title: 'Account',
+      description: 'Edit or delete you account information',
+      fields: {
+        can_be_shared: {
+          description: 'Allow other users to share their trips with you.',
+        },
+      },
+    },
     errors: {
       could_not_delete_picture:
         'An error occurred while deleting your profile picture.\n Please try again later.',
@@ -50,6 +55,7 @@ const customEnglishMessages: TranslationMessages = {
       first_name: 'First Name',
       last_name: 'Last Name',
       email: 'Email',
+      can_be_shared: 'Can Be Shared',
     },
   },
 };

@@ -4,7 +4,8 @@ import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import { useTranslate, useGetIdentity, useLogout, Title } from 'react-admin';
 import ProfilePicture from './ProfilePicture';
-import NameForm, { NameFormSkeleton } from './NameForm';
+import PersonalData, { PersonalDataSkeleton } from './PersonalData';
+import Account, { AccountSkeleton } from './Account';
 
 const AVATAR_SIZE = '8rem';
 
@@ -43,14 +44,21 @@ const Profile = () => {
           <ProfilePicture size={AVATAR_SIZE} identity={identity} />
         )}
         {identity ? (
-          <NameForm id={identity.id} />
+          <PersonalData id={identity.id} />
         ) : (
           // should never happen, but just in case
           <Skeleton animation="wave" variant="rounded">
-            <NameFormSkeleton />
+            <PersonalDataSkeleton />
           </Skeleton>
         )}
-        {/* TODO add password reset field */}
+        {identity ? (
+          <Account id={identity.id} />
+        ) : (
+          // should never happen, but just in case
+          <Skeleton animation="wave" variant="rounded">
+            <AccountSkeleton />
+          </Skeleton>
+        )}
       </Box>
     </Card>
   );

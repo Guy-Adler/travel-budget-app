@@ -9,7 +9,14 @@ import Layout from './layout';
 import Profile from './views/profile';
 
 const resources = {
-  profiles: ['id', 'email', 'first_name', 'last_name', 'avatar_url'],
+  profiles: [
+    'id',
+    'email',
+    'first_name',
+    'last_name',
+    'avatar_url',
+    'can_be_shared',
+  ],
   trips: ['id', 'created_at', 'updated_at', 'updated_by', 'owner', 'name'],
   shares: ['id', 'trip_id', 'user_id', 'can_edit'],
   expenses: [
