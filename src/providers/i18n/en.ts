@@ -19,6 +19,7 @@ const customEnglishMessages: TranslationMessages = {
     reset_password_error:
       'An error occurred while resetting your password.\nPlease try again later.',
     reset_password_success: 'Password changed successfully!',
+    account_delete_success: 'Account deleted successfully!',
   },
   or: 'OR',
   profile: {
@@ -53,6 +54,11 @@ const customEnglishMessages: TranslationMessages = {
         confirmPassword: {
           description: 'Confirm the password to reset to.',
         },
+      },
+      delete: {
+        title: 'Delete your account',
+        content:
+          'Are you sure you want to delete your account?\nThis action is ireversable.',
       },
     },
     errors: {

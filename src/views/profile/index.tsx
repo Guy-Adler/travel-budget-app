@@ -1,11 +1,13 @@
 import React from 'react';
 import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import Skeleton from '@mui/material/Skeleton';
 import { useTranslate, useGetIdentity, useLogout, Title } from 'react-admin';
 import ProfilePicture from './ProfilePicture';
 import PersonalData, { PersonalDataSkeleton } from './PersonalData';
 import Account, { AccountSkeleton } from './Account';
+import DeleteAccount from './DeleteAccount';
 
 const AVATAR_SIZE = '8rem';
 
@@ -44,22 +46,32 @@ const Profile = () => {
         ) : (
           <ProfilePicture size={AVATAR_SIZE} identity={identity} />
         )}
-        {identity ? (
-          <PersonalData id={identity.id} />
-        ) : (
-          // should never happen, but just in case
-          <Skeleton animation="wave" variant="rounded">
-            <PersonalDataSkeleton />
-          </Skeleton>
-        )}
-        {identity ? (
-          <Account id={identity.id} />
-        ) : (
-          // should never happen, but just in case
-          <Skeleton animation="wave" variant="rounded">
-            <AccountSkeleton />
-          </Skeleton>
-        )}
+        <Stack width="100%" padding="0 2rem">
+          {identity ? (
+            <PersonalData id={identity.id} />
+          ) : (
+            // should never happen, but just in case
+            <Skeleton animation="wave" variant="rounded">
+              <PersonalDataSkeleton />
+            </Skeleton>
+          )}
+          {identity ? (
+            <Account id={identity.id} />
+          ) : (
+            // should never happen, but just in case
+            <Skeleton animation="wave" variant="rounded">
+              <AccountSkeleton />
+            </Skeleton>
+          )}
+          {identity ? (
+            <DeleteAccount />
+          ) : (
+            // should never happen, but just in case
+            <Skeleton animation="wave" variant="rounded">
+              <DeleteAccount />
+            </Skeleton>
+          )}
+        </Stack>
       </Box>
     </Card>
   );

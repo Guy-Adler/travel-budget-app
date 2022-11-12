@@ -40,10 +40,7 @@ export const supabaseAuthProvider: SupabaseAuthProvider = {
     return undefined;
   },
   async logout() {
-    const { error } = await client.auth.signOut();
-    if (error) {
-      throw new Error(`(${error.status}): ${error.message}`);
-    }
+    await client.auth.signOut();
   },
   async checkAuth() {
     if (client.auth.session() === null) {
