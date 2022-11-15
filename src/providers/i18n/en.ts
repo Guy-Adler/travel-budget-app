@@ -72,6 +72,9 @@ const customEnglishMessages: TranslationMessages = {
         'An error occurred while uploading your profile picture.\n Please try again later.',
     },
   },
+  trips: {
+    page_title: 'Your Trips'
+  },
   resources: {
     profiles: {
       first_name: 'First Name',
@@ -79,6 +82,13 @@ const customEnglishMessages: TranslationMessages = {
       email: 'Email',
       can_be_shared: 'Can Be Shared',
     },
+    trips: {
+      created_at: 'Created At',
+      updated_at: 'Updated At',
+      updated_by: 'Updated By',
+      owner: 'Owner',
+      name: 'Name'
+    }
   },
 };
 

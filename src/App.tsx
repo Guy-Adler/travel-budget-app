@@ -7,6 +7,7 @@ import i18nProvider from './providers/i18n';
 import LogIn from './views/auth/LogIn';
 import Layout from './layout';
 import Profile from './views/profile';
+import TripList from './views/trips';
 import useTitle from './hooks/useTitle';
 
 const resources = {
@@ -50,7 +51,7 @@ const App = () => {
     <CustomRoutes>
       <Route path="/profile" element={<Profile />} />
     </CustomRoutes>
-    <Resource name="trips" list={ListGuesser} />
+    <Resource name="trips" list={TripList} />
     <Resource name="expenses" list={ListGuesser} />
   </Admin>
 );}
