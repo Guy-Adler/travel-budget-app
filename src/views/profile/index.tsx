@@ -26,10 +26,10 @@ const Profile = () => {
       <Title title={translate('profile.title')} />
       <Box
         sx={{
-          margin: '1em',
+          margin: '1rem',
           display: 'flex',
           flexDirection: 'column',
-          gap: '2em',
+          gap: '2rem',
           alignItems: {
             xs: 'center',
             sm: 'normal',
@@ -46,7 +46,7 @@ const Profile = () => {
         ) : (
           <ProfilePicture size={AVATAR_SIZE} identity={identity} />
         )}
-        <Stack width="100%" padding="0 2rem">
+        <Stack width="100%" padding="0 2rem" gap="2rem">
           {identity ? (
             <PersonalData id={identity.id} />
           ) : (
