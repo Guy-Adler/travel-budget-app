@@ -3,6 +3,9 @@ import englishMessages from 'ra-language-english';
 
 const customEnglishMessages: TranslationMessages = {
   ...englishMessages,
+  app: {
+    name: 'Travel Budget App',
+  },
   auth: {
     email: 'Email',
     google: 'Sign in with google',
@@ -24,6 +27,7 @@ const customEnglishMessages: TranslationMessages = {
   or: 'OR',
   profile: {
     title: 'Profile',
+    page_title: 'Your Profile',
     picture_dialog_title: 'Edit or Delete Your Profile Picture',
     deleted_picture: 'Deleted profile picture successfully.',
     uploaded_picture: 'Uploaded profile picture successfully.',

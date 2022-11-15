@@ -7,6 +7,7 @@ import i18nProvider from './providers/i18n';
 import LogIn from './views/auth/LogIn';
 import Layout from './layout';
 import Profile from './views/profile';
+import useTitle from './hooks/useTitle';
 
 const resources = {
   profiles: [
@@ -33,7 +34,9 @@ const resources = {
   ],
 };
 
-const App = () => (
+const App = () => {
+  useTitle('Travel Budget App', false);
+  return (
   <Admin
     title=""
     layout={Layout}
@@ -50,6 +53,6 @@ const App = () => (
     <Resource name="trips" list={ListGuesser} />
     <Resource name="expenses" list={ListGuesser} />
   </Admin>
-);
+);}
 
 export default App;

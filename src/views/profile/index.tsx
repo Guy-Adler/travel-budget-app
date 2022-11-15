@@ -8,6 +8,7 @@ import ProfilePicture from './ProfilePicture';
 import PersonalData, { PersonalDataSkeleton } from './PersonalData';
 import Account, { AccountSkeleton } from './Account';
 import DeleteAccount from './DeleteAccount';
+import useTitle from '@/src/hooks/useTitle';
 
 const AVATAR_SIZE = '8rem';
 
@@ -15,6 +16,7 @@ const Profile = () => {
   const translate = useTranslate();
   const { identity, error, isLoading } = useGetIdentity();
   const logout = useLogout();
+  useTitle('profile.page_title');
 
   if (error) {
     logout();

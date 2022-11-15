@@ -22,6 +22,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import GoogleIcon from '@mui/icons-material/Google';
 import ForgotPasswordButton from './ForgotPassword';
 import client from '@/src/providers/supabase';
+import useTitle from '@/src/hooks/useTitle';
 
 interface FormValues {
   username?: string;
@@ -36,6 +37,7 @@ const LoginPage: React.FC = () => {
   const login = useLogin();
   const location = useLocation();
   const redirect = useRedirect();
+  useTitle('ra.auth.sign_in');
 
   const handleSubmit = (auth: FormValues) => {
     setLoading(true);
