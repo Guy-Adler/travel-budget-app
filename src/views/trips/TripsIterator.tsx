@@ -19,8 +19,7 @@ const TripsIterator = () => {
       <CreateCard />
       {data.slice((page - 1) * perPage, page * perPage).map((trip) => (
         <Grid
-          xs={2}
-          sm={8 / 3} // 3 cols
+          sm={4} // 2 cols
           md={12 / 5} // 5 cols
           key={trip.id + Math.random()}
         >

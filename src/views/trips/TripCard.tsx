@@ -42,7 +42,7 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
   });
 
   return (
-    <Card elevation={3}>
+    <Card sx={{ height: '100%' }} elevation={3}>
       <CardContent>
         <Typography variant="h5">{trip.trip_name}</Typography>
         <Stack direction="row" alignItems="center" gap={1}>
