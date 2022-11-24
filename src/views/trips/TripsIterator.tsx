@@ -5,13 +5,9 @@ import type { Schema } from '@/src/types/schema';
 import TripCard from './TripCard';
 import CreateCard from './CreateCard';
 
-function duplicate<T>(data: Array<T>): Array<T> {
-  // TODO remove me im for testing
-  return Array(7).fill(data).flat();
-}
 
 const TripsIterator = () => {
-  const { data } = useListContext<Schema['trips']>();
+  const { data, perPage, page } = useListContext<Schema['trips']>();
 
   return (
     <Grid
@@ -21,7 +17,7 @@ const TripsIterator = () => {
       columns={{ xs: 4, sm: 8, md: 12 }}
     >
       <CreateCard />
-      {duplicate(data).map((trip) => (
+      {data.slice((page - 1) * perPage, page * perPage).map((trip) => (
         <Grid
           xs={2}
           sm={8 / 3} // 3 cols
