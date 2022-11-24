@@ -48,7 +48,7 @@ export type Schema = {
     updated_at: Date;
     updated_by: UUID;
     owner: UUID;
-    name: string;
+    trip_name: string;
   };
   shares: {
     id: number;
@@ -62,7 +62,7 @@ export type Schema = {
     created_at: Date;
     updated_at: Date;
     updated_by: UUID;
-    name: string;
+    expense_name: string;
     amount: number;
     currency: Currency;
     purchase_date: TextDate | null;

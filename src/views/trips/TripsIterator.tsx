@@ -1,63 +1,37 @@
-import React, { useCallback } from 'react';
-import Stack from '@mui/material/Stack';
+import React from 'react';
+import Grid from '@mui/material/Unstable_Grid2';
 import { useListContext } from 'react-admin';
-import type { User } from '@supabase/supabase-js';
-import client from '@/src/providers/supabase';
 import type { Schema } from '@/src/types/schema';
 import TripCard from './TripCard';
+import CreateCard from './CreateCard';
+
+function duplicate<T>(data: Array<T>): Array<T> {
+  // TODO remove me im for testing
+  return Array(20).fill(data).flat();
+}
 
 const TripsIterator = () => {
   const { data } = useListContext<Schema['trips']>();
-  const { id } = client.auth.user() as User;
-
-  const seperateTrips = useCallback(
-    () =>
-    [
-      ...data,
-      ...data,
-      ...data,
-      ...data,
-      ...data,
-      ...data,
-      ...data,
-      ...data,
-      ...data,
-    ].reduce(
-        (res, trip) => {
-          if (trip.owner === id) res.owned.push(trip);
-          else res.shared.push(trip);
-          return res;
-        },
-        {
-          owned: [] as Schema['trips'][],
-          shared: [] as Schema['trips'][],
-        }
-      ),
-    [data, id]
-  );
 
   return (
-    <>
-      <Stack
-        gap="2rem"
-        sx={{ padding: 2, maxWidth: '100%', flexWrap: 'wrap' }}
-        direction="row"
-      >
-        {seperateTrips().owned.map((trip) => (
-          <TripCard key={trip.id + Math.random()} trip={trip} />
-        ))}
-      </Stack>
-      <hr />
-      <Stack
-        gap="2rem"
-        sx={{ padding: 2, maxWidth: '100%', flexWrap: 'wrap' }}
-        direction="row"
-      >
-        {seperateTrips().owned.map((trip) => (
-          <TripCard key={trip.id + Math.random()} trip={trip} />
-        ))}
-      </Stack>
-    </>
+    <Grid
+      container
+      disableEqualOverflow
+      spacing={{ xs: 2, md: 3 }}
+      columns={{ xs: 4, sm: 8, md: 12 }}
+    >
+      <CreateCard />
+      {duplicate(data).map((trip) => (
+        <Grid
+          xs={2}
+          sm={8 / 3} // 3 cols
+          md={12 / 5} // 5 cols
+          key={trip.id + Math.random()}
+        >
+          <TripCard trip={trip} />
+        </Grid>
+      ))}
+    </Grid>
   );
 };
 

@@ -87,7 +87,7 @@ const customEnglishMessages: TranslationMessages = {
       updated_at: 'Updated At',
       updated_by: 'Updated By',
       owner: 'Owner',
-      name: 'Name',
+      trip_name: 'Name',
     },
   },
   meta: {

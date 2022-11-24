@@ -18,7 +18,7 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
   return (
     <Card>
       <CardContent>
-        <Typography variant="h5">{trip.name}</Typography>
+        <Typography variant="h5">{trip.trip_name}</Typography>
         <Typography variant="body2">
           {translate('meta.created_at', {
             date: formatRelative(new Date(trip.created_at), new Date(), {

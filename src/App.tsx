@@ -19,7 +19,7 @@ const resources = {
     'avatar_url',
     'can_be_shared',
   ],
-  trips: ['id', 'created_at', 'updated_at', 'updated_by', 'owner', 'name'],
+  trips: ['id', 'created_at', 'updated_at', 'updated_by', 'owner', 'trip_name'],
   shares: ['id', 'trip_id', 'user_id', 'can_edit'],
   expenses: [
     'id',
@@ -27,7 +27,7 @@ const resources = {
     'created_at',
     'updated_at',
     'updated_by',
-    'name',
+    'expense_name',
     'amount',
     'currency',
     'purchase_date',
