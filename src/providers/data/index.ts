@@ -3,6 +3,7 @@ import client from '../supabase';
 
 type ResourceOptionsWithFullTextSearch = {
   table?: string;
+  view?: string;
   primaryKey?: string;
   fields: string[];
   fullTextSearchFields?: string[];
@@ -20,6 +21,7 @@ const getResourceOptions = (
   if (Array.isArray(resourceOptions)) {
     return {
       table: resource,
+      view: resource,
       primaryKey: 'id',
       fields: resourceOptions,
       fullTextSearchFields: resourceOptions,
@@ -28,6 +30,7 @@ const getResourceOptions = (
 
   return {
     table: resourceOptions.table ?? resource,
+    view: resourceOptions.view ?? resourceOptions.table ?? resource,
     primaryKey: resourceOptions.primaryKey ?? 'id',
     fields: resourceOptions.fields,
     fullTextSearchFields:
@@ -52,7 +55,7 @@ const getList = async ({
   const rangeTo = rangeFrom + pagination.perPage;
 
   let query = client
-    .from(resourceOptions.table)
+    .from(resourceOptions.view)
     .select(resourceOptions.fields.join(', '), { count: 'exact' })
     .order(sort.field, { ascending: sort.order === 'ASC' })
     .match(filter)
@@ -95,7 +98,7 @@ export const supabaseDataProvider = (
   async getOne(resource, { id }) {
     const resourceOptions = getResourceOptions(resource, resources);
     const { data, error } = await client
-      .from(resourceOptions.table)
+      .from(resourceOptions.view)
       .select(resourceOptions.fields.join(', '))
       .match({ id })
       .single();
@@ -114,7 +117,7 @@ export const supabaseDataProvider = (
     const resourceOptions = getResourceOptions(resource, resources);
 
     const { data, error } = await client
-      .from(resourceOptions.table)
+      .from(resourceOptions.view)
       .select(resourceOptions.fields.join(', '))
       .in('id', ids);
 

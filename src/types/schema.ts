@@ -44,11 +44,18 @@ export type Schema = {
   };
   trips: {
     id: number;
-    created_at: Date;
-    updated_at: Date;
-    updated_by: UUID;
+    created_at: string;
     owner: UUID;
+    updated_at: string;
+    updated_by: UUID;
     trip_name: string;
+    owner_first_name: string | null;
+    owner_last_name: string | null;
+    owner_avatar_url: string | null;
+    updated_by_first_name: string | null;
+    updated_by_last_name: string | null;
+    updated_by_avatar_url: string | null;
+    is_owner: boolean;
   };
   shares: {
     id: number;
@@ -59,8 +66,8 @@ export type Schema = {
   expenses: {
     id: number;
     trip_id: number;
-    created_at: Date;
-    updated_at: Date;
+    created_at: string;
+    updated_at: string;
     updated_by: UUID;
     expense_name: string;
     amount: number;

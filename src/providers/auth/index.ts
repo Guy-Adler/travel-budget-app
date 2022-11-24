@@ -1,4 +1,4 @@
-import type { AuthProvider } from 'ra-core';
+import type { AuthProvider, UserIdentity } from 'ra-core';
 import client from '../supabase';
 import type { Schema } from '../../types/schema';
 
@@ -30,6 +30,16 @@ const getInitialsAvatarUrl = (
   }
   return undefined;
 };
+
+const createIdentity = (data: Pick<Schema['profiles'], 'id' | 'avatar_url' | 'first_name' | 'last_name'>): UserIdentity => ({
+  id: data.id,
+  avatar:
+    data?.avatar_url ||
+    getInitialsAvatarUrl(data.first_name, data.last_name),
+  fullName: `${data?.first_name} ${data?.last_name}`.trim() || undefined,
+});
+
+export { createIdentity };
 
 export const supabaseAuthProvider: SupabaseAuthProvider = {
   async login({ username: email, password }: LoginCredentials) {
@@ -80,7 +90,7 @@ export const supabaseAuthProvider: SupabaseAuthProvider = {
 
     const { data, error } = await client
       .from<Schema['profiles']>('profiles')
-      .select('first_name, last_name, avatar_url')
+      .select('*')
       .match({ id: user.id })
       .single();
 
@@ -88,12 +98,6 @@ export const supabaseAuthProvider: SupabaseAuthProvider = {
       throw new Error(`(${error.code}): ${error.message}`);
     }
 
-    return {
-      id: user.id,
-      avatar:
-        data?.avatar_url ||
-        getInitialsAvatarUrl(data.first_name, data.last_name),
-      fullName: `${data?.first_name} ${data?.last_name}`.trim() || undefined,
-    };
+    return createIdentity(data);
   },
 };

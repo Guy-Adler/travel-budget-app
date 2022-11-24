@@ -7,7 +7,7 @@ import CreateCard from './CreateCard';
 
 function duplicate<T>(data: Array<T>): Array<T> {
   // TODO remove me im for testing
-  return Array(20).fill(data).flat();
+  return Array(7).fill(data).flat();
 }
 
 const TripsIterator = () => {

@@ -3,7 +3,7 @@ import { List } from 'react-admin';
 import TripsIterator from './TripsIterator';
 
 const TripList = () => (
-  <List emptyWhileLoading>
+  <List emptyWhileLoading sort={{ field: 'updated_at', order: 'DESC' }}>
     <TripsIterator />
   </List>
 );

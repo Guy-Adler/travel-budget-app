@@ -16,7 +16,7 @@ const AddCard: React.FC = () => {
       sm={8 / 3} // 3 cols
       md={12 / 5} // 5 cols
     >
-      <Card sx={{ height: '100%' }}>
+      <Card sx={{ height: '100%' }} elevation={3}>
         <Button sx={{ height: '100%', width: '100%' }}>
           <CardContent
             sx={{

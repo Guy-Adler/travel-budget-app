@@ -4,6 +4,7 @@ import englishMessages from 'ra-language-english';
 const customEnglishMessages: TranslationMessages = {
   ...englishMessages,
   or: 'OR',
+  me: 'me',
   app: {
     name: 'Travel Budget App',
   },
@@ -91,10 +92,8 @@ const customEnglishMessages: TranslationMessages = {
     },
   },
   meta: {
-    created_at: 'Created %{date}',
-    last_updated_at: 'Last Updated %{date}',
-    created_at_by: 'Created %{date} by %{name}',
-    last_updated_at_by: 'Last Updated %{date} by %{name}',
+    created_at: 'Created %{date} by %{name}',
+    last_updated_at: 'Last updated %{date} by %{name}',
   },
 };
 
