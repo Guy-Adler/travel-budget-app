@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
 import CardContent from '@mui/material/CardContent';
@@ -6,18 +6,21 @@ import Grid from '@mui/material/Unstable_Grid2';
 import AddIcon from '@mui/icons-material/Add';
 import Typography from '@mui/material/Typography';
 import { useTranslate } from 'react-admin';
+import CreateTrip from './CreateTrip';
 
 const AddCard: React.FC = () => {
   const translate = useTranslate();
+  const [open, setOpen] = useState(false);
 
   return (
+    <>
     <Grid
       xs={2}
       sm={8 / 2} // 2 cols
       md={12 / 5} // 5 cols
     >
       <Card sx={{ height: '100%' }} elevation={3}>
-        <CardActionArea sx={{ height: '100%', color: 'primary.main', textTransform: 'uppercase' }}>
+        <CardActionArea sx={{ height: '100%', color: 'primary.main', textTransform: 'uppercase' }} onClick={() => {setOpen(true)}}>
           <CardContent
             sx={{
               display: 'flex',
@@ -36,6 +39,8 @@ const AddCard: React.FC = () => {
         </CardActionArea>
       </Card>
     </Grid>
+    <CreateTrip open={open} onClose={() => {setOpen(false)}} />
+    </>
   );
 };
 
