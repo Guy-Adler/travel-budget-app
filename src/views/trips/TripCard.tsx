@@ -1,6 +1,7 @@
 import React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import CardActionArea from '@mui/material/CardActionArea';
 import Typography from '@mui/material/Typography';
 import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
@@ -43,59 +44,61 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
 
   return (
     <Card sx={{ height: '100%' }} elevation={3}>
-      <CardContent>
-        <Typography variant="h5">{trip.trip_name}</Typography>
-        <Stack direction="row" alignItems="center" gap={1}>
-          <Badge
-            overlap="circular"
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            badgeContent={
-              <SmallAvatar>
-                <CreatedIcon />
-              </SmallAvatar>
-            }
-          >
-            <Avatar alt={ownerIdentity.fullName} src={ownerIdentity.avatar} />
-          </Badge>
-          <Typography variant="body1">
-            {translate('meta.created_at', {
-              date: formatRelative(new Date(trip.created_at), new Date(), {
-                locale,
-                weekStartsOn: 0,
-              }),
-              name: trip.is_owner ? translate('me') : ownerIdentity.fullName,
-            })}
-          </Typography>
-        </Stack>
-        <Stack direction="row" alignItems="center" gap={1}>
-          <Badge
-            overlap="circular"
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            badgeContent={
-              <SmallAvatar>
-                <UpdatedIcon />
-              </SmallAvatar>
-            }
-          >
-            <Avatar
-              alt={updatedByIdentity.fullName}
-              src={updatedByIdentity.avatar}
-            />
-          </Badge>
-          <Typography variant="body1">
-            {translate('meta.last_updated_at', {
-              date: formatRelative(new Date(trip.updated_at), new Date(), {
-                locale,
-                weekStartsOn: 0,
-              }),
-              name:
-                updatedByIdentity.id === client.auth.user()?.id
-                  ? translate('me')
-                  : updatedByIdentity.fullName,
-            })}
-          </Typography>
-        </Stack>
-      </CardContent>
+      <CardActionArea>
+        <CardContent>
+          <Typography variant="h5">{trip.trip_name}</Typography>
+          <Stack direction="row" alignItems="center" gap={1}>
+            <Badge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              badgeContent={
+                <SmallAvatar>
+                  <CreatedIcon />
+                </SmallAvatar>
+              }
+            >
+              <Avatar alt={ownerIdentity.fullName} src={ownerIdentity.avatar} />
+            </Badge>
+            <Typography variant="body1">
+              {translate('meta.created_at', {
+                date: formatRelative(new Date(trip.created_at), new Date(), {
+                  locale,
+                  weekStartsOn: 0,
+                }),
+                name: trip.is_owner ? translate('me') : ownerIdentity.fullName,
+              })}
+            </Typography>
+          </Stack>
+          <Stack direction="row" alignItems="center" gap={1}>
+            <Badge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              badgeContent={
+                <SmallAvatar>
+                  <UpdatedIcon />
+                </SmallAvatar>
+              }
+            >
+              <Avatar
+                alt={updatedByIdentity.fullName}
+                src={updatedByIdentity.avatar}
+              />
+            </Badge>
+            <Typography variant="body1">
+              {translate('meta.last_updated_at', {
+                date: formatRelative(new Date(trip.updated_at), new Date(), {
+                  locale,
+                  weekStartsOn: 0,
+                }),
+                name:
+                  updatedByIdentity.id === client.auth.user()?.id
+                    ? translate('me')
+                    : updatedByIdentity.fullName,
+              })}
+            </Typography>
+          </Stack>
+        </CardContent>
+      </CardActionArea>
     </Card>
   );
 };

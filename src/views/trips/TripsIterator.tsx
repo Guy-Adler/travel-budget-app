@@ -15,6 +15,7 @@ const TripsIterator = () => {
       disableEqualOverflow
       spacing={{ xs: 2, md: 3 }}
       columns={{ xs: 4, sm: 8, md: 12 }}
+      marginBottom={1}
     >
       <CreateCard />
       {data.slice((page - 1) * perPage, page * perPage).map((trip) => (

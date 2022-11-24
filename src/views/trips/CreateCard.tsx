@@ -1,6 +1,6 @@
 import React from 'react';
 import Card from '@mui/material/Card';
-import Button from '@mui/material/Button';
+import CardActionArea from '@mui/material/CardActionArea';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Unstable_Grid2';
 import AddIcon from '@mui/icons-material/Add';
@@ -17,22 +17,23 @@ const AddCard: React.FC = () => {
       md={12 / 5} // 5 cols
     >
       <Card sx={{ height: '100%' }} elevation={3}>
-        <Button sx={{ height: '100%', width: '100%' }}>
+        <CardActionArea sx={{ height: '100%', color: 'primary.main', textTransform: 'uppercase' }}>
           <CardContent
             sx={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              justifyContent: 'space-between',
               height: '100%',
             }}
           >
             <Typography variant="h5" >
               {translate('ra.action.create')}
             </Typography>
-            <AddIcon fontSize="large" />
+            <div style={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+              <AddIcon fontSize="large" />
+            </div>
           </CardContent>
-        </Button>
+        </CardActionArea>
       </Card>
     </Grid>
   );
