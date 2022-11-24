@@ -3,6 +3,7 @@ import englishMessages from 'ra-language-english';
 
 const customEnglishMessages: TranslationMessages = {
   ...englishMessages,
+  or: 'OR',
   app: {
     name: 'Travel Budget App',
   },
@@ -24,7 +25,6 @@ const customEnglishMessages: TranslationMessages = {
     reset_password_success: 'Password changed successfully!',
     account_delete_success: 'Account deleted successfully!',
   },
-  or: 'OR',
   profile: {
     title: 'Profile',
     page_title: 'Your Profile',
@@ -73,7 +73,7 @@ const customEnglishMessages: TranslationMessages = {
     },
   },
   trips: {
-    page_title: 'Your Trips'
+    page_title: 'Your Trips',
   },
   resources: {
     profiles: {
@@ -87,8 +87,14 @@ const customEnglishMessages: TranslationMessages = {
       updated_at: 'Updated At',
       updated_by: 'Updated By',
       owner: 'Owner',
-      name: 'Name'
-    }
+      name: 'Name',
+    },
+  },
+  meta: {
+    created_at: 'Created %{date}',
+    last_updated_at: 'Last Updated %{date}',
+    created_at_by: 'Created %{date} by %{name}',
+    last_updated_at_by: 'Last Updated %{date} by %{name}',
   },
 };
 
