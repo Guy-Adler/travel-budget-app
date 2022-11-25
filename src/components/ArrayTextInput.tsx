@@ -1,6 +1,7 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
 import Chip from '@mui/material/Chip';
+import ErrorIcon from '@mui/icons-material/Error';
 import type { ControllerRenderProps } from 'react-hook-form';
 import {
   useInput,
@@ -94,15 +95,21 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
       }}
       InputProps={{
         startAdornment: value.map((email, idx) => (
-          <Chip
-            key={Math.random()}
-            label={email}
-            size="medium"
-            onDelete={() => {
-              setValue([...value.slice(0, idx), ...value.slice(idx + 1)]);
-            }}
-          />
-        )),
+            <Chip
+              key={Math.random()}
+              label={email}
+              variant="outlined"
+              size="small"
+              onDelete={() => {
+                setValue([...value.slice(0, idx), ...value.slice(idx + 1)]);
+              }}
+              sx={{
+                mr: 1,
+                mt: 1,
+                mb: 'auto',
+              }}
+            />
+          )),
         sx: {
           display: 'flex',
           flexWrap: 'wrap',
