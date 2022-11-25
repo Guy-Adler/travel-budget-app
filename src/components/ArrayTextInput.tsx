@@ -1,10 +1,12 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect, useRef } from 'react';
 import TextField from '@mui/material/TextField';
 import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
-import { AvatarProps } from '@mui/material/Avatar';
+import type { AvatarProps } from '@mui/material/Avatar';
 import ErrorIcon from '@mui/icons-material/Error';
 import LoadingIcon from '@mui/icons-material/Sync';
+import type { SvgIconProps } from '@mui/material/SvgIcon';
 import { keyframes } from '@mui/material/styles';
 import type { ControllerRenderProps } from 'react-hook-form';
 import {
@@ -38,7 +40,21 @@ const spin = keyframes`
   }
 `;
 
-const convertToPropsObject = (value: Awaited<ReturnType<Validator>>): Record<string, any> => {
+const ChipIcon: React.FC<
+  SvgIconProps & { isLoadingError: boolean; isError: boolean }
+> = ({ isLoadingError, isError, ...props }) => {
+  if (isLoadingError) {
+    return <LoadingIcon {...props} sx={{ animation: `${spin} 1s infinite ease` }} />
+  }
+  if (isError) {
+    return <ErrorIcon {...props} />;
+  }
+  return null;
+};
+
+const convertToPropsObject = (
+  value: Awaited<ReturnType<Validator>>
+): Record<string, any> => {
   if (typeof value === 'string' || typeof value === 'boolean') {
     return {};
   }
@@ -72,7 +88,9 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
     ...rest,
   }) as ArrayTextUseInputValue;
 
-  const [chipsError, setChipsErrors] = useState<(string | boolean | { avatar: Record<string, any>; })[]>([]);
+  const [chipsError, setChipsErrors] = useState<
+    (string | boolean | { avatar: Record<string, any> })[]
+  >([]);
   const [focusedTag, setFocusedTag] = useState(-1);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const anchorRef = useRef<HTMLDivElement | null>(null);
@@ -187,9 +205,13 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
       InputProps={{
         ref: anchorRef,
         startAdornment: value.map((val, idx) => {
-          const chipLabelString = chipLabel ? (chipLabel(convertToPropsObject(chipsError[idx])) ?? val) : val;
+          const chipLabelString = chipLabel
+            ? chipLabel(convertToPropsObject(chipsError[idx])) ?? val
+            : val;
           const isLoadingError = idx >= chipsError.length;
-          const isError = idx < chipsError.length && (chipsError[idx] === true || typeof chipsError[idx] === 'string');
+          const isError =
+            idx < chipsError.length &&
+            (chipsError[idx] === true || typeof chipsError[idx] === 'string');
           let tooltipTitle = '';
           if (isError && typeof chipsError[idx] === 'string') {
             tooltipTitle = chipsError[idx] as string;
@@ -198,65 +220,57 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
           }
 
           return (
-          <Tooltip
-            key={Math.random()}
-            title={translate(tooltipTitle)}
-            data-tag-index={idx}
-          >
-            <Chip
-              label={chipLabelString}
-              color={
-                isError
-                  ? 'error'
-                  : undefined
-              }
-              variant="outlined"
-              icon={
-                /* because otherwise there is a style issue */ // eslint-disable-next-line no-nested-ternary
-                isLoadingError ? (
-                  <LoadingIcon sx={{ animation: `${spin} 1s infinite ease` }} />
-                ) : isError ? (
-                  <ErrorIcon />
-                ) : undefined
-              }
-              avatar={
-                Avatar && !isError ? (
-                  // eslint-disable-next-line react/jsx-props-no-spreading
-                  <Avatar value={val} {...(convertToPropsObject(chipsError[idx])?.avatar ?? {})} />
-                ) : undefined
-              }
-              size="small"
-              onDelete={() => deleteTag(idx)}
-              sx={{
-                mr: 1,
-                mt: 1,
-                mb: 'auto',
-              }}
-              onClick={() => {
-                if (inputRef.current) {
-                  inputRef.current.value = value[idx];
-                  deleteTag(idx);
+            <Tooltip
+              key={Math.random()}
+              title={translate(tooltipTitle)}
+              data-tag-index={idx}
+            >
+              <Chip
+                label={chipLabelString}
+                color={isError ? 'error' : undefined}
+                variant="outlined"
+                icon={<ChipIcon isLoadingError={isLoadingError} isError={isError} />}
+                avatar={
+                  Avatar && !isLoadingError && !isError ? (
+                    <Avatar
+                      value={val}
+                      {...(convertToPropsObject(chipsError[idx])?.avatar ?? {})}
+                    />
+                  ) : undefined
                 }
-              }}
-              onKeyDown={(e) => {
-                // handle delete
-                if (['Backspace', 'Delete'].includes(e.key)) {
-                  deleteTag(idx);
-                }
-  
-                // handle edit
-                if (e.key === 'Enter') {
-                  e.stopPropagation();
-                  e.preventDefault();
+                size="small"
+                onDelete={() => deleteTag(idx)}
+                sx={{
+                  mr: 1,
+                  mt: 1,
+                  mb: 'auto',
+                }}
+                onClick={() => {
                   if (inputRef.current) {
                     inputRef.current.value = value[idx];
                     deleteTag(idx);
                   }
-                }
-              }}
-            />
-          </Tooltip>
-        )}),
+                }}
+                onKeyDown={(e) => {
+                  // handle delete
+                  if (['Backspace', 'Delete'].includes(e.key)) {
+                    deleteTag(idx);
+                  }
+
+                  // handle edit
+                  if (e.key === 'Enter') {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    if (inputRef.current) {
+                      inputRef.current.value = value[idx];
+                      deleteTag(idx);
+                    }
+                  }
+                }}
+              />
+            </Tooltip>
+          );
+        }),
         sx: {
           display: 'flex',
           flexWrap: 'wrap',
@@ -279,7 +293,7 @@ ArrayTextInput.defaultProps = {
   newTagKeys: [],
   valuesValidator: () => false,
   Avatar: undefined,
-  chipLabel: undefined
+  chipLabel: undefined,
 };
 
 export type Validator = (
@@ -294,7 +308,9 @@ interface ArrayTextInputProps extends AutocompleteArrayInputProps {
   source: string;
   newTagKeys?: string[];
   valuesValidator?: Validator;
-  Avatar?: React.ComponentType<Partial<AvatarProps> & { value: string } & Record<string, any>>;
+  Avatar?: React.ComponentType<
+    Partial<AvatarProps> & { value: string } & Record<string, any>
+  >;
   chipLabel?: (validationData: Record<string, any>) => string | undefined;
 }
 
