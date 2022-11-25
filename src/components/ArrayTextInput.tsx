@@ -53,6 +53,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   newTagKeys = [],
   valuesValidator = () => true,
   Avatar,
+  chipLabel,
   ...rest
 }) => {
   const translate = useTranslate();
@@ -187,7 +188,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
         startAdornment: value.map((val, idx) => (
           <Chip
             key={Math.random()}
-            label={val}
+            label={chipLabel ? (chipLabel(convertToPropsObject(chipsError[idx])) ?? val) : val}
             color={
               idx < chipsError.length && (chipsError[idx] === true || typeof chipsError[idx] === 'string')
                 ? 'error'
@@ -262,6 +263,7 @@ ArrayTextInput.defaultProps = {
   newTagKeys: [],
   valuesValidator: () => false,
   Avatar: undefined,
+  chipLabel: undefined
 };
 
 export type Validator = (
@@ -277,6 +279,7 @@ interface ArrayTextInputProps extends AutocompleteArrayInputProps {
   newTagKeys?: string[];
   valuesValidator?: Validator;
   Avatar?: React.ComponentType<Partial<AvatarProps> & { value: string } & Record<string, any>>;
+  chipLabel?: (validationData: Record<string, any>) => string | undefined;
 }
 
 export type { ArrayTextInputProps };

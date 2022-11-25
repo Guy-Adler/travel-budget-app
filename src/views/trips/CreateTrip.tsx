@@ -72,6 +72,7 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
               newTagKeys={[' ']}
               valuesValidator={validateEmail}
               Avatar={Avatar}
+              chipLabel={(data) => data?.avatar?.identity?.fullName ?? undefined}
             />
             <SaveButton />
           </Form>
