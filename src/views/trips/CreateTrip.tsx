@@ -5,23 +5,55 @@ import DialogContent from '@mui/material/DialogContent';
 import AvatarMui from '@mui/material/Avatar';
 import { CreateBase, useTranslate, Form, SaveButton } from 'react-admin';
 import ArrayTextInput, { Validator, ArrayTextInputProps } from '@/src/components/ArrayTextInput';
+import client from '@/src/providers/supabase';
+import type { Schema } from '@/src/types/schema';
+import { createIdentity } from '@/src/providers/auth';
 
 interface CreateDialogProps {
   open: boolean;
   onClose: () => void;
 }
+/* @link http://stackoverflow.com/questions/46155/validate-email-address-in-javascript */
+const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line no-useless-escape
 
-const validateEmail: Validator = async (value: string) =>
-  new Promise((res) => {
-    setTimeout(() => {
-      if (!/[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}/gim.test(value)) res(true);
-      res(false);
-    }, 1000);
-  });
+const validateEmail: Validator = async (value: string) => {
+  // Check if email is valid:
+  if (!EMAIL_REGEX.test(value)) return 'ra.validation.email';
+  // Get user data, check if it is relevant.
+  const { error, data } = await client.from<Schema['profiles']>('profiles').select('*').eq('email', value);
 
-const Avatar: ArrayTextInputProps['Avatar'] = ({ value, ...props }) => (
+  if (error || !data) {
+    // server side error
+    return true;
+  }
+
+  if (data.length > 1) {
+    // server side error
+    return true;
+  }
+
+  if (data.length === 0) {
+    // no user exists
+    return true;
+  }
+
+  if (data[0].id === client.auth.user()?.id) {
+    // can't share with yourself
+    return true;
+  }
+
+  const identity = createIdentity(data[0]);
+
+  return {
+    avatar: {
+      identity,
+    }
+  }
+};
+
+const Avatar: ArrayTextInputProps['Avatar'] = ({ identity, ...props }) => (
   // eslint-disable-next-line react/jsx-props-no-spreading
-  <AvatarMui {...props}>{value[0]}</AvatarMui>
+  <AvatarMui {...props} src={typeof identity?.avatar === 'string' ? identity.avatar : undefined} />
 );
 
 const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
