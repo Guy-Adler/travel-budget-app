@@ -75,6 +75,13 @@ const customEnglishMessages: TranslationMessages = {
   },
   trips: {
     page_title: 'Your Trips',
+    shares: {
+      errors: {
+        user_not_found: 'User not found, or disabled his discoverability.',
+        cant_share_yourself: 'You can not share a trip with yourself.',
+
+      }
+    }
   },
   resources: {
     profiles: {
@@ -89,6 +96,7 @@ const customEnglishMessages: TranslationMessages = {
       updated_by: 'Updated By',
       owner: 'Owner',
       trip_name: 'Name',
+      shares: 'Select Emails'
     },
   },
   meta: {

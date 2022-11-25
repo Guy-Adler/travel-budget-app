@@ -19,27 +19,23 @@ const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"
 const validateEmail: Validator = async (value: string) => {
   // Check if email is valid:
   if (!EMAIL_REGEX.test(value)) return 'ra.validation.email';
+
   // Get user data, check if it is relevant.
   const { error, data } = await client.from<Schema['profiles']>('profiles').select('*').eq('email', value);
 
-  if (error || !data) {
+  if (error || !data || data.length > 1) {
     // server side error
-    return true;
-  }
-
-  if (data.length > 1) {
-    // server side error
-    return true;
+    return 'ra.notification.http_error';
   }
 
   if (data.length === 0) {
     // no user exists
-    return true;
+    return 'trips.shares.errors.user_not_found';
   }
 
   if (data[0].id === client.auth.user()?.id) {
     // can't share with yourself
-    return true;
+    return 'trips.shares.errors.cant_share_yourself';
   }
 
   const identity = createIdentity(data[0]);
@@ -66,13 +62,13 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
-      <DialogTitle>Create Trip</DialogTitle>
+      <DialogTitle>{translate('ra.action.create_item', { item: 'Trip' })}</DialogTitle>
       <DialogContent>
         <CreateBase redirect={false} transform={removeOutsideDataAndResubmit}>
           <Form>
             <ArrayTextInput
               source="shares"
-              label="Select Emails"
+              label="resources.trips.shares"
               newTagKeys={[' ']}
               valuesValidator={validateEmail}
               Avatar={Avatar}

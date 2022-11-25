@@ -10,6 +10,7 @@ import {
   useInput,
   AutocompleteArrayInputProps,
   UseInputValue,
+  useTranslate,
 } from 'react-admin';
 
 const addValue = (
@@ -54,6 +55,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   Avatar,
   ...rest
 }) => {
+  const translate = useTranslate();
   const {
     field: { name, onBlur: fieldOnBlur, onChange: setValue, ref, value },
     fieldState: { isTouched, invalid, error },
@@ -175,7 +177,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
       error={(isTouched || isSubmitted) && invalid}
       helperText={(isTouched || isSubmitted) && invalid ? error?.message : ''}
       required={isRequired}
-      label={label}
+      label={translate(typeof label === 'string' ? label : source)}
       fullWidth
       sx={{
         maxWidth: '100%',
