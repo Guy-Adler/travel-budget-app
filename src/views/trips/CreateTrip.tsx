@@ -6,9 +6,9 @@ import {
   CreateBase,
   useTranslate,
   Form,
-  CreateButton,
+  SaveButton,
 } from 'react-admin';
-import ArrayEmailInput from '@/src/components/ArrayEmailInput';
+import ArrayTextInput from '@/src/components/ArrayTextInput';
 
 interface CreateDialogProps {
   open: boolean;
@@ -18,7 +18,10 @@ interface CreateDialogProps {
 const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
   const translate = useTranslate();
 
-  const removeOutsideDataAndResubmit = (data) => ({});
+  const removeOutsideDataAndResubmit = (data) => {
+    const { shares, ...rest } = data;
+    return rest;
+  };
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
@@ -26,8 +29,8 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
       <DialogContent>
         <CreateBase redirect={false} transform={removeOutsideDataAndResubmit}>
           <Form>
-            <ArrayEmailInput source="tmp" label="Select Emails" />
-            <CreateButton />
+            <ArrayTextInput source="shares" label="Select Emails" newTagKeys={[' ']} />
+            <SaveButton  />
           </Form>
         </CreateBase>
       </DialogContent>
