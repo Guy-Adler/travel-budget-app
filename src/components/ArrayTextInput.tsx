@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Chip from '@mui/material/Chip';
+import { AvatarProps } from '@mui/material/Avatar';
 import ErrorIcon from '@mui/icons-material/Error';
 import LoadingIcon from '@mui/icons-material/Sync';
 import { keyframes } from '@mui/material/styles';
@@ -43,6 +44,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   validate,
   newTagKeys = [],
   valuesValidator = () => true,
+  Avatar,
   ...rest
 }) => {
   const {
@@ -58,6 +60,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
     defaultValue: [],
     ...rest,
   }) as ArrayTextUseInputValue;
+
   const [chipsError, setChipsErrors] = useState<(string | boolean)[]>([]);
 
   return (
@@ -102,22 +105,23 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
         maxWidth: '100%',
       }}
       InputProps={{
-        startAdornment: value.map((email, idx) => (
+        startAdornment: value.map((val, idx) => (
           <Chip
             key={Math.random()}
-            label={email}
+            label={val}
             color={
-              idx < chipsError.length && !chipsError[idx] ? 'error' : undefined
+              idx < chipsError.length && chipsError[idx] !== false ? 'error' : undefined
             }
             variant="outlined"
             icon={
               /* because otherwise there is a style issue */ // eslint-disable-next-line no-nested-ternary
               idx >= chipsError.length ? (
                 <LoadingIcon sx={{ animation: `${spin} 1s infinite ease` }} />
-              ) : !chipsError[idx] ? (
+              ) : chipsError[idx] !== false ? (
                 <ErrorIcon />
               ) : undefined
             }
+            avatar={Avatar && (idx < chipsError.length || chipsError[idx] === false) ? <Avatar value={val} /> : undefined}
             size="small"
             onDelete={() => {
               setValue([...value.slice(0, idx), ...value.slice(idx + 1)]);
@@ -150,9 +154,11 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
 
 export default ArrayTextInput;
 
+
 ArrayTextInput.defaultProps = {
   newTagKeys: [],
   valuesValidator: () => false,
+  Avatar: undefined
 };
 
 export type Validator = (
@@ -163,7 +169,10 @@ interface ArrayTextInputProps extends AutocompleteArrayInputProps {
   source: string;
   newTagKeys?: string[];
   valuesValidator?: Validator;
+  Avatar?: React.ComponentType<Partial<AvatarProps> & { value: string }>
 }
+
+export type { ArrayTextInputProps };
 
 interface ArrayTextUseInputValue extends UseInputValue {
   field: Omit<ControllerRenderProps, 'value'> & {
