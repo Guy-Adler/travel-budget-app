@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TextField from '@mui/material/TextField';
 import Chip from '@mui/material/Chip';
+import Tooltip from '@mui/material/Tooltip';
 import { AvatarProps } from '@mui/material/Avatar';
 import ErrorIcon from '@mui/icons-material/Error';
 import LoadingIcon from '@mui/icons-material/Sync';
@@ -185,62 +186,77 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
       }}
       InputProps={{
         ref: anchorRef,
-        startAdornment: value.map((val, idx) => (
-          <Chip
-            key={Math.random()}
-            label={chipLabel ? (chipLabel(convertToPropsObject(chipsError[idx])) ?? val) : val}
-            color={
-              idx < chipsError.length && (chipsError[idx] === true || typeof chipsError[idx] === 'string')
-                ? 'error'
-                : undefined
-            }
-            variant="outlined"
-            data-tag-index={idx}
-            icon={
-              /* because otherwise there is a style issue */ // eslint-disable-next-line no-nested-ternary
-              idx >= chipsError.length ? (
-                <LoadingIcon sx={{ animation: `${spin} 1s infinite ease` }} />
-              ) : (chipsError[idx] === true || typeof chipsError[idx] === 'string') ? (
-                <ErrorIcon />
-              ) : undefined
-            }
-            avatar={
-              Avatar && idx < chipsError.length && !((chipsError[idx] === true || typeof chipsError[idx] === 'string')) ? (
-                // eslint-disable-next-line react/jsx-props-no-spreading
-                <Avatar value={val} {...(convertToPropsObject(chipsError[idx]).avatar ?? {})} />
-              ) : undefined
-            }
-            size="small"
-            onDelete={() => deleteTag(idx)}
-            sx={{
-              mr: 1,
-              mt: 1,
-              mb: 'auto',
-            }}
-            onClick={() => {
-              if (inputRef.current) {
-                inputRef.current.value = value[idx];
-                deleteTag(idx);
-              }
-            }}
-            onKeyDown={(e) => {
-              // handle delete
-              if (['Backspace', 'Delete'].includes(e.key)) {
-                deleteTag(idx);
-              }
+        startAdornment: value.map((val, idx) => {
+          const chipLabelString = chipLabel ? (chipLabel(convertToPropsObject(chipsError[idx])) ?? val) : val;
+          const isLoadingError = idx >= chipsError.length;
+          const isError = idx < chipsError.length && (chipsError[idx] === true || typeof chipsError[idx] === 'string');
+          let tooltipTitle = '';
+          if (isError && typeof chipsError[idx] === 'string') {
+            tooltipTitle = chipsError[idx] as string;
+          } else if (!isError) {
+            tooltipTitle = chipLabelString === val ? '' : val;
+          }
 
-              // handle edit
-              if (e.key === 'Enter') {
-                e.stopPropagation();
-                e.preventDefault();
+          return (
+          <Tooltip
+            key={Math.random()}
+            title={translate(tooltipTitle)}
+            data-tag-index={idx}
+          >
+            <Chip
+              label={chipLabelString}
+              color={
+                isError
+                  ? 'error'
+                  : undefined
+              }
+              variant="outlined"
+              icon={
+                /* because otherwise there is a style issue */ // eslint-disable-next-line no-nested-ternary
+                isLoadingError ? (
+                  <LoadingIcon sx={{ animation: `${spin} 1s infinite ease` }} />
+                ) : isError ? (
+                  <ErrorIcon />
+                ) : undefined
+              }
+              avatar={
+                Avatar && !isError ? (
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  <Avatar value={val} {...(convertToPropsObject(chipsError[idx])?.avatar ?? {})} />
+                ) : undefined
+              }
+              size="small"
+              onDelete={() => deleteTag(idx)}
+              sx={{
+                mr: 1,
+                mt: 1,
+                mb: 'auto',
+              }}
+              onClick={() => {
                 if (inputRef.current) {
                   inputRef.current.value = value[idx];
                   deleteTag(idx);
                 }
-              }
-            }}
-          />
-        )),
+              }}
+              onKeyDown={(e) => {
+                // handle delete
+                if (['Backspace', 'Delete'].includes(e.key)) {
+                  deleteTag(idx);
+                }
+  
+                // handle edit
+                if (e.key === 'Enter') {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  if (inputRef.current) {
+                    inputRef.current.value = value[idx];
+                    deleteTag(idx);
+                  }
+                }
+              }}
+            />
+          </Tooltip>
+        )}),
         sx: {
           display: 'flex',
           flexWrap: 'wrap',
