@@ -36,6 +36,13 @@ const spin = keyframes`
   }
 `;
 
+const convertToPropsObject = (value: Awaited<ReturnType<Validator>>): Record<string, any> => {
+  if (typeof value === 'string' || typeof value === 'boolean') {
+    return {};
+  }
+  return value;
+};
+
 const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   onChange,
   onBlur,
@@ -61,7 +68,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
     ...rest,
   }) as ArrayTextUseInputValue;
 
-  const [chipsError, setChipsErrors] = useState<(string | boolean)[]>([]);
+  const [chipsError, setChipsErrors] = useState<(string | boolean | { avatar: Record<string, any>; })[]>([]);
   const [focusedTag, setFocusedTag] = useState(-1);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const anchorRef = useRef<HTMLDivElement | null>(null);
@@ -180,7 +187,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
             key={Math.random()}
             label={val}
             color={
-              idx < chipsError.length && chipsError[idx] !== false
+              idx < chipsError.length && (chipsError[idx] === true || typeof chipsError[idx] === 'string')
                 ? 'error'
                 : undefined
             }
@@ -190,13 +197,14 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
               /* because otherwise there is a style issue */ // eslint-disable-next-line no-nested-ternary
               idx >= chipsError.length ? (
                 <LoadingIcon sx={{ animation: `${spin} 1s infinite ease` }} />
-              ) : chipsError[idx] !== false ? (
+              ) : (chipsError[idx] === true || typeof chipsError[idx] === 'string') ? (
                 <ErrorIcon />
               ) : undefined
             }
             avatar={
-              Avatar && idx < chipsError.length && chipsError[idx] === false ? (
-                <Avatar value={val} />
+              Avatar && idx < chipsError.length && !((chipsError[idx] === true || typeof chipsError[idx] === 'string')) ? (
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                <Avatar value={val} {...(convertToPropsObject(chipsError[idx]).avatar ?? {})} />
               ) : undefined
             }
             size="small"
@@ -256,13 +264,17 @@ ArrayTextInput.defaultProps = {
 
 export type Validator = (
   value: string
-) => boolean | string | Promise<boolean | string>;
+) =>
+  | boolean
+  | string
+  | { avatar: Record<string, any> }
+  | Promise<boolean | string | { avatar: Record<string, any> }>;
 
 interface ArrayTextInputProps extends AutocompleteArrayInputProps {
   source: string;
   newTagKeys?: string[];
   valuesValidator?: Validator;
-  Avatar?: React.ComponentType<Partial<AvatarProps> & { value: string }>;
+  Avatar?: React.ComponentType<Partial<AvatarProps> & { value: string } & Record<string, any>>;
 }
 
 export type { ArrayTextInputProps };
