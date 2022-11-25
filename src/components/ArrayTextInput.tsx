@@ -70,7 +70,9 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
     if (tagIndex === -1) {
       inputRef.current?.focus();
     } else {
-      const tag = anchorRef.current?.querySelector(`[data-tag-index="${tagIndex}"]`) as HTMLElement | null | undefined;
+      const tag = anchorRef.current?.querySelector(
+        `[data-tag-index="${tagIndex}"]`
+      ) as HTMLElement | null | undefined;
       tag?.focus();
     }
   };
@@ -106,7 +108,11 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   };
 
   useEffect(() => {
-    if (focusedTag < -1 || !Number.isInteger(focusedTag) || focusedTag > chipsError.length) {
+    if (
+      focusedTag < -1 ||
+      !Number.isInteger(focusedTag) ||
+      focusedTag > chipsError.length
+    ) {
       setFocusedTag(-1);
     } else {
       moveFocus(focusedTag);
@@ -134,7 +140,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
         if (e.key === 'ArrowRight') {
           handleFocusTag('next');
         }
-    
+
         // Handle Tag creation
         if ([...newTagKeys, 'Enter'].includes(e.key)) {
           e.preventDefault();
@@ -174,7 +180,9 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
             key={Math.random()}
             label={val}
             color={
-              idx < chipsError.length && chipsError[idx] !== false ? 'error' : undefined
+              idx < chipsError.length && chipsError[idx] !== false
+                ? 'error'
+                : undefined
             }
             variant="outlined"
             data-tag-index={idx}
@@ -186,7 +194,11 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
                 <ErrorIcon />
               ) : undefined
             }
-            avatar={Avatar && idx < chipsError.length && chipsError[idx] === false ? <Avatar value={val} /> : undefined}
+            avatar={
+              Avatar && idx < chipsError.length && chipsError[idx] === false ? (
+                <Avatar value={val} />
+              ) : undefined
+            }
             size="small"
             onDelete={() => deleteTag(idx)}
             sx={{
@@ -194,9 +206,26 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
               mt: 1,
               mb: 'auto',
             }}
+            onClick={() => {
+              if (inputRef.current) {
+                inputRef.current.value = value[idx];
+                deleteTag(idx);
+              }
+            }}
             onKeyDown={(e) => {
+              // handle delete
               if (['Backspace', 'Delete'].includes(e.key)) {
                 deleteTag(idx);
+              }
+
+              // handle edit
+              if (e.key === 'Enter') {
+                e.stopPropagation();
+                e.preventDefault();
+                if (inputRef.current) {
+                  inputRef.current.value = value[idx];
+                  deleteTag(idx);
+                }
               }
             }}
           />
@@ -219,11 +248,10 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
 
 export default ArrayTextInput;
 
-
 ArrayTextInput.defaultProps = {
   newTagKeys: [],
   valuesValidator: () => false,
-  Avatar: undefined
+  Avatar: undefined,
 };
 
 export type Validator = (
@@ -234,7 +262,7 @@ interface ArrayTextInputProps extends AutocompleteArrayInputProps {
   source: string;
   newTagKeys?: string[];
   valuesValidator?: Validator;
-  Avatar?: React.ComponentType<Partial<AvatarProps> & { value: string }>
+  Avatar?: React.ComponentType<Partial<AvatarProps> & { value: string }>;
 }
 
 export type { ArrayTextInputProps };
