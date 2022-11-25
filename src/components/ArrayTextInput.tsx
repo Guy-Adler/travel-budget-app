@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Chip from '@mui/material/Chip';
 import ErrorIcon from '@mui/icons-material/Error';
+import LoadingIcon from '@mui/icons-material/Sync';
+import { keyframes } from '@mui/material/styles';
 import type { ControllerRenderProps } from 'react-hook-form';
 import {
   useInput,
@@ -9,35 +11,29 @@ import {
   UseInputValue,
 } from 'react-admin';
 
-interface ArrayTextInputProps extends AutocompleteArrayInputProps {
-  source: string;
-  newTagKeys?: string[];
-}
-
-interface ArrayTextUseInputValue extends UseInputValue {
-  field: Omit<ControllerRenderProps, 'value'> & {
-    value: string[];
-  };
-}
-
-type UpdateValueEvent = React.FocusEvent<
-  HTMLInputElement | HTMLTextAreaElement,
-  Element
->;
-
-const updateValue = (
-  e: UpdateValueEvent,
+const addValue = (
+  e: AddValueEvent,
   setValue: (...args: any[]) => void,
   previousValue: string[]
 ) => {
-  if (e.target.value !== '') {
+  const val = e.target.value;
+  if (val !== '') {
     // prevent empty tags
-    setValue([
-      ...new Set([...previousValue, (e.target as HTMLInputElement).value]),
-    ]); // update values (cast to set to make unique)
+    setValue([...new Set([...previousValue, val])]); // update values (cast to set to make unique)
     e.target.value = ''; // remove current value from the input itself (clear it)
+    return val;
   }
+  return undefined;
 };
+
+const spin = keyframes`
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+`;
 
 const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   onChange,
@@ -46,6 +42,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   label,
   validate,
   newTagKeys = [],
+  valuesValidator = () => true,
   ...rest
 }) => {
   const {
@@ -61,26 +58,37 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
     defaultValue: [],
     ...rest,
   }) as ArrayTextUseInputValue;
+  const [chipsError, setChipsErrors] = useState<(string | boolean)[]>([]);
 
   return (
     <TextField
       name={name}
-      onBlur={(e) => {
-        updateValue(e, setValue, value);
-
+      onBlur={async (e) => {
+        const newValue = addValue(e, setValue, value);
+        if (newValue) {
+          setChipsErrors([...chipsError, await valuesValidator(newValue)]);
+        }
         fieldOnBlur();
       }}
-      onKeyDown={(e) => {
+      onKeyDown={async (e) => {
         if ([...newTagKeys, 'Enter'].includes(e.key)) {
           e.preventDefault();
           e.stopPropagation();
-          updateValue(e as unknown as UpdateValueEvent, setValue, value);
+          const newValue = addValue(
+            e as unknown as AddValueEvent,
+            setValue,
+            value
+          );
+          if (newValue) {
+            setChipsErrors([...chipsError, await valuesValidator(newValue)]);
+          }
         }
         if (
           e.key === 'Backspace' &&
           (e.target as HTMLInputElement).value === ''
         ) {
           setValue(value.slice(0, -1));
+          setChipsErrors((errors) => errors.slice(0, -1));
         }
       }}
       ref={ref}
@@ -95,21 +103,36 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
       }}
       InputProps={{
         startAdornment: value.map((email, idx) => (
-            <Chip
-              key={Math.random()}
-              label={email}
-              variant="outlined"
-              size="small"
-              onDelete={() => {
-                setValue([...value.slice(0, idx), ...value.slice(idx + 1)]);
-              }}
-              sx={{
-                mr: 1,
-                mt: 1,
-                mb: 'auto',
-              }}
-            />
-          )),
+          <Chip
+            key={Math.random()}
+            label={email}
+            color={
+              idx < chipsError.length && !chipsError[idx] ? 'error' : undefined
+            }
+            variant="outlined"
+            icon={
+              /* because otherwise there is a style issue */ // eslint-disable-next-line no-nested-ternary
+              idx >= chipsError.length ? (
+                <LoadingIcon sx={{ animation: `${spin} 1s infinite ease` }} />
+              ) : !chipsError[idx] ? (
+                <ErrorIcon />
+              ) : undefined
+            }
+            size="small"
+            onDelete={() => {
+              setValue([...value.slice(0, idx), ...value.slice(idx + 1)]);
+              setChipsErrors((errors) => [
+                ...errors.slice(0, idx),
+                ...errors.slice(idx + 1),
+              ]);
+            }}
+            sx={{
+              mr: 1,
+              mt: 1,
+              mb: 'auto',
+            }}
+          />
+        )),
         sx: {
           display: 'flex',
           flexWrap: 'wrap',
@@ -129,4 +152,26 @@ export default ArrayTextInput;
 
 ArrayTextInput.defaultProps = {
   newTagKeys: [],
+  valuesValidator: () => false,
 };
+
+export type Validator = (
+  value: string
+) => boolean | string | Promise<boolean | string>;
+
+interface ArrayTextInputProps extends AutocompleteArrayInputProps {
+  source: string;
+  newTagKeys?: string[];
+  valuesValidator?: Validator;
+}
+
+interface ArrayTextUseInputValue extends UseInputValue {
+  field: Omit<ControllerRenderProps, 'value'> & {
+    value: string[];
+  };
+}
+
+type AddValueEvent = React.FocusEvent<
+  HTMLInputElement | HTMLTextAreaElement,
+  Element
+>;
