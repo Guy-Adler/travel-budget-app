@@ -28,6 +28,7 @@
       {
         "extensions": [".tsx", ".jsx"]
       }
-    ]
+    ],
+    "react/jsx-no-duplicate-props": ["error", { "ignoreCase": false }]
   }
 }

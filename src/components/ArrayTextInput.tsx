@@ -2,7 +2,11 @@ import React from 'react';
 import TextField from '@mui/material/TextField';
 import Chip from '@mui/material/Chip';
 import type { ControllerRenderProps } from 'react-hook-form';
-import { useInput, AutocompleteArrayInputProps, UseInputValue } from 'react-admin';
+import {
+  useInput,
+  AutocompleteArrayInputProps,
+  UseInputValue,
+} from 'react-admin';
 
 interface ArrayTextInputProps extends AutocompleteArrayInputProps {
   source: string;
@@ -15,14 +19,24 @@ interface ArrayTextUseInputValue extends UseInputValue {
   };
 }
 
-type UpdateValueEvent = React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
+type UpdateValueEvent = React.FocusEvent<
+  HTMLInputElement | HTMLTextAreaElement,
+  Element
+>;
 
-const updateValue = (e: UpdateValueEvent, setValue: (...args: any[]) => void, previousValue: string[]) => {
-  if (e.target.value !== '') { // prevent empty tags
-    setValue([...new Set([...previousValue, (e.target as HTMLInputElement).value])]); // update values (cast to set to make unique)
+const updateValue = (
+  e: UpdateValueEvent,
+  setValue: (...args: any[]) => void,
+  previousValue: string[]
+) => {
+  if (e.target.value !== '') {
+    // prevent empty tags
+    setValue([
+      ...new Set([...previousValue, (e.target as HTMLInputElement).value]),
+    ]); // update values (cast to set to make unique)
     e.target.value = ''; // remove current value from the input itself (clear it)
   }
-}
+};
 
 const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   onChange,
@@ -34,7 +48,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   ...rest
 }) => {
   const {
-    field: { name, onBlur: fieldOnBlur, onChange: fieldOnChange, ref, value },
+    field: { name, onBlur: fieldOnBlur, onChange: setValue, ref, value },
     fieldState: { isTouched, invalid, error },
     formState: { isSubmitted },
     isRequired,
@@ -51,7 +65,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
     <TextField
       name={name}
       onBlur={(e) => {
-        updateValue(e, fieldOnChange, value);
+        updateValue(e, setValue, value);
 
         fieldOnBlur();
       }}
@@ -59,10 +73,13 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
         if ([...newTagKeys, 'Enter'].includes(e.key)) {
           e.preventDefault();
           e.stopPropagation();
-          updateValue(e as unknown as UpdateValueEvent, fieldOnChange, value);
+          updateValue(e as unknown as UpdateValueEvent, setValue, value);
         }
-        if (e.key === 'Backspace' && (e.target as HTMLInputElement).value === '') {
-          fieldOnChange(value.slice(0, -1));
+        if (
+          e.key === 'Backspace' &&
+          (e.target as HTMLInputElement).value === ''
+        ) {
+          setValue(value.slice(0, -1));
         }
       }}
       ref={ref}
@@ -72,10 +89,30 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
       required={isRequired}
       label={label}
       fullWidth
+      sx={{
+        maxWidth: '100%',
+      }}
       InputProps={{
-        startAdornment: value.map((email: string) => (
-          <Chip key={Math.random()} label={email} size="medium" />
+        startAdornment: value.map((email, idx) => (
+          <Chip
+            key={Math.random()}
+            label={email}
+            size="medium"
+            onDelete={() => {
+              setValue([...value.slice(0, idx), ...value.slice(idx + 1)]);
+            }}
+          />
         )),
+        sx: {
+          display: 'flex',
+          flexWrap: 'wrap',
+        },
+      }}
+      inputProps={{
+        style: {
+          display: 'block',
+          flex: '1 1',
+        },
       }}
     />
   );
@@ -84,5 +121,5 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
 export default ArrayTextInput;
 
 ArrayTextInput.defaultProps = {
-  newTagKeys: []
+  newTagKeys: [],
 };
