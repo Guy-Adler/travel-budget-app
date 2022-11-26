@@ -31,11 +31,15 @@ const getInitialsAvatarUrl = (
   return undefined;
 };
 
-const createIdentity = (data: Pick<Schema['profiles'], 'id' | 'avatar_url' | 'first_name' | 'last_name'>): UserIdentity => ({
+const createIdentity = (
+  data: Pick<
+    Schema['profiles'],
+    'id' | 'avatar_url' | 'first_name' | 'last_name'
+  >
+): UserIdentity => ({
   id: data.id,
   avatar:
-    data?.avatar_url ||
-    getInitialsAvatarUrl(data.first_name, data.last_name),
+    data?.avatar_url || getInitialsAvatarUrl(data.first_name, data.last_name),
   fullName: `${data.first_name} ${data.last_name}`.trim() || undefined,
 });
 

@@ -5,7 +5,6 @@ import type { Schema } from '@/src/types/schema';
 import TripCard from './TripCard';
 import CreateCard from './CreateCard';
 
-
 const TripsIterator = () => {
   const { data, perPage, page } = useListContext<Schema['trips']>();
 

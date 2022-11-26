@@ -56,22 +56,23 @@ const resources: ResourcesOptions = {
 const App = () => {
   useTitle('Travel Budget App', false);
   return (
-  <Admin
-    title=""
-    layout={Layout}
-    loginPage={LogIn}
-    authProvider={supabaseAuthProvider}
-    dataProvider={supabaseDataProvider(resources)}
-    requireAuth
-    i18nProvider={i18nProvider}
-    disableTelemetry
-  >
-    <CustomRoutes>
-      <Route path="/profile" element={<Profile />} />
-    </CustomRoutes>
-    <Resource name="trips" list={TripList} />
-    <Resource name="expenses" list={ListGuesser} />
-  </Admin>
-);}
+    <Admin
+      title=""
+      layout={Layout}
+      loginPage={LogIn}
+      authProvider={supabaseAuthProvider}
+      dataProvider={supabaseDataProvider(resources)}
+      requireAuth
+      i18nProvider={i18nProvider}
+      disableTelemetry
+    >
+      <CustomRoutes>
+        <Route path="/profile" element={<Profile />} />
+      </CustomRoutes>
+      <Resource name="trips" list={TripList} />
+      <Resource name="expenses" list={ListGuesser} />
+    </Admin>
+  );
+};
 
 export default App;

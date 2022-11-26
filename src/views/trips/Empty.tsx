@@ -85,7 +85,11 @@ const Empty = (props: EmptyProps) => {
         )}
       </div>
       <div className={EmptyClasses.toolbar}>
-        <Button variant="contained" onClick={() => dialogState[1](true)} startIcon={<Add />}>
+        <Button
+          variant="contained"
+          onClick={() => dialogState[1](true)}
+          startIcon={<Add />}
+        >
           {translate('ra.action.create')}
         </Button>
       </div>

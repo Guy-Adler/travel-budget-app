@@ -6,9 +6,8 @@ const locales = {
   en: enGB,
 };
 
-const isValidLocale = (locale: string): locale is keyof typeof locales => (
-  Object.hasOwn(locales, locale)
-);
+const isValidLocale = (locale: string): locale is keyof typeof locales =>
+  Object.hasOwn(locales, locale);
 
 const useDateFNSLocale = () => {
   const [locale] = useLocaleState();

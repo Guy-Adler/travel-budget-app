@@ -7,7 +7,8 @@ const App = dynamic(() => import('../src/App'), { ssr: false });
 const Home: NextPage = () => (
   <>
     <Head>
-      <meta name="referrer" content="no-referrer" /> {/* https://github.com/chakra-ui/chakra-ui/issues/5909 */}
+      <meta name="referrer" content="no-referrer" />{' '}
+      {/* https://github.com/chakra-ui/chakra-ui/issues/5909 */}
     </Head>
     <App />
   </>

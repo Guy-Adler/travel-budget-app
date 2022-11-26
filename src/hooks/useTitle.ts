@@ -18,7 +18,11 @@ import { useTranslate } from 'react-admin';
  * }
  * ```
  */
-const useTitle = (title: string, shouldTranslate: boolean = true, appName: string = 'app.name') => {
+const useTitle = (
+  title: string,
+  shouldTranslate: boolean = true,
+  appName: string = 'app.name'
+) => {
   const translate = useTranslate();
 
   useEffect(() => {
@@ -32,7 +36,7 @@ const useTitle = (title: string, shouldTranslate: boolean = true, appName: strin
       if (shouldTranslate) {
         document.title = translate('app.name');
       }
-    }
+    };
   }, [title, translate, shouldTranslate, appName]);
 };
 

@@ -4,7 +4,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import AvatarMui from '@mui/material/Avatar';
 import { CreateBase, useTranslate, Form, SaveButton } from 'react-admin';
-import ArrayTextInput, { Validator, ArrayTextInputProps } from '@/src/components/ArrayTextInput';
+import ArrayTextInput, {
+  Validator,
+  ArrayTextInputProps,
+} from '@/src/components/ArrayTextInput';
 import client from '@/src/providers/supabase';
 import type { Schema } from '@/src/types/schema';
 import { createIdentity } from '@/src/providers/auth';
@@ -14,14 +17,18 @@ interface CreateDialogProps {
   onClose: () => void;
 }
 /* @link http://stackoverflow.com/questions/46155/validate-email-address-in-javascript */
-const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line no-useless-escape
+const EMAIL_REGEX =
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line no-useless-escape
 
 const validateEmail: Validator = async (value: string) => {
   // Check if email is valid:
   if (!EMAIL_REGEX.test(value)) return 'ra.validation.email';
 
   // Get user data, check if it is relevant.
-  const { error, data } = await client.from<Schema['profiles']>('profiles').select('*').eq('email', value);
+  const { error, data } = await client
+    .from<Schema['profiles']>('profiles')
+    .select('*')
+    .eq('email', value);
 
   if (error || !data || data.length > 1) {
     // server side error
@@ -43,13 +50,16 @@ const validateEmail: Validator = async (value: string) => {
   return {
     avatar: {
       identity,
-    }
-  }
+    },
+  };
 };
 
 const Avatar: ArrayTextInputProps['Avatar'] = ({ identity, ...props }) => (
   // eslint-disable-next-line react/jsx-props-no-spreading
-  <AvatarMui {...props} src={typeof identity?.avatar === 'string' ? identity.avatar : undefined} />
+  <AvatarMui
+    {...props}
+    src={typeof identity?.avatar === 'string' ? identity.avatar : undefined}
+  />
 );
 
 const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
@@ -62,7 +72,9 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
-      <DialogTitle>{translate('ra.action.create_item', { item: 'Trip' })}</DialogTitle>
+      <DialogTitle>
+        {translate('ra.action.create_item', { item: 'Trip' })}
+      </DialogTitle>
       <DialogContent>
         <CreateBase redirect={false} transform={removeOutsideDataAndResubmit}>
           <Form>
@@ -72,7 +84,9 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
               newTagKeys={[' ']}
               valuesValidator={validateEmail}
               Avatar={Avatar}
-              chipLabel={(data) => data?.avatar?.identity?.fullName ?? undefined}
+              chipLabel={(data) =>
+                data?.avatar?.identity?.fullName ?? undefined
+              }
             />
             <SaveButton />
           </Form>

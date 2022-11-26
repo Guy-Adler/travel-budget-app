@@ -44,7 +44,9 @@ const ChipIcon: React.FC<
   SvgIconProps & { isLoadingError: boolean; isError: boolean }
 > = ({ isLoadingError, isError, ...props }) => {
   if (isLoadingError) {
-    return <LoadingIcon {...props} sx={{ animation: `${spin} 1s infinite ease` }} />
+    return (
+      <LoadingIcon {...props} sx={{ animation: `${spin} 1s infinite ease` }} />
+    );
   }
   if (isError) {
     return <ErrorIcon {...props} />;
@@ -229,7 +231,9 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
                 label={chipLabelString}
                 color={isError ? 'error' : undefined}
                 variant="outlined"
-                icon={<ChipIcon isLoadingError={isLoadingError} isError={isError} />}
+                icon={
+                  <ChipIcon isLoadingError={isLoadingError} isError={isError} />
+                }
                 avatar={
                   Avatar && !isLoadingError && !isError ? (
                     <Avatar

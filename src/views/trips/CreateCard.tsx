@@ -19,7 +19,16 @@ const AddCard: React.FC = () => {
       md={12 / 5} // 5 cols
     >
       <Card sx={{ height: '100%' }} elevation={3}>
-        <CardActionArea sx={{ height: '100%', color: 'primary.main', textTransform: 'uppercase' }} onClick={() => {dialogState[1](true)}}>
+        <CardActionArea
+          sx={{
+            height: '100%',
+            color: 'primary.main',
+            textTransform: 'uppercase',
+          }}
+          onClick={() => {
+            dialogState[1](true);
+          }}
+        >
           <CardContent
             sx={{
               display: 'flex',
@@ -28,10 +37,12 @@ const AddCard: React.FC = () => {
               height: '100%',
             }}
           >
-            <Typography variant="h5" >
+            <Typography variant="h5">
               {translate('ra.action.create')}
             </Typography>
-            <div style={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+            <div
+              style={{ height: '100%', display: 'flex', alignItems: 'center' }}
+            >
               <AddIcon fontSize="large" />
             </div>
           </CardContent>
