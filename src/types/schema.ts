@@ -37,8 +37,8 @@ export type Schema = {
   profiles: {
     id: UUID;
     email: string | null;
-    first_name: string | null;
-    last_name: string | null;
+    first_name: string;
+    last_name: string;
     avatar_url: string | null;
     can_be_shared: boolean;
   };
@@ -49,11 +49,11 @@ export type Schema = {
     updated_at: string;
     updated_by: UUID;
     trip_name: string;
-    owner_first_name: string | null;
-    owner_last_name: string | null;
+    owner_first_name: string;
+    owner_last_name: string;
     owner_avatar_url: string | null;
-    updated_by_first_name: string | null;
-    updated_by_last_name: string | null;
+    updated_by_first_name: string;
+    updated_by_last_name: string;
     updated_by_avatar_url: string | null;
     is_owner: boolean;
   };

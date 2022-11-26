@@ -19,13 +19,13 @@ class CheckAuthError extends Error {
 }
 
 const getInitialsAvatarUrl = (
-  first_name: string | null,
-  last_name: string | null
+  first_name: string,
+  last_name: string
 ): string | undefined => {
-  if ((first_name?.length ?? 0) + (last_name?.length ?? 0) > 0) {
+  if ((first_name.length ?? 0) + (last_name.length ?? 0) > 0) {
     // we can make at least 1 letter in the initials
-    return `https://avatars.dicebear.com/api/initials/${first_name?.[0] ?? ''}${
-      last_name?.[0] ?? ''
+    return `https://avatars.dicebear.com/api/initials/${first_name[0] ?? ''}${
+      last_name[0] ?? ''
     }.svg`;
   }
   return undefined;
@@ -36,7 +36,7 @@ const createIdentity = (data: Pick<Schema['profiles'], 'id' | 'avatar_url' | 'fi
   avatar:
     data?.avatar_url ||
     getInitialsAvatarUrl(data.first_name, data.last_name),
-  fullName: `${data?.first_name} ${data?.last_name}`.trim() || undefined,
+  fullName: `${data.first_name} ${data.last_name}`.trim() || undefined,
 });
 
 export { createIdentity };
