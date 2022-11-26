@@ -20,7 +20,7 @@ import useEffectAfterMount from '@/src/hooks/useEffectAfterMount';
 const addValue = (
   e: AddValueEvent,
   setValue: (...args: any[]) => void,
-  previousValue: string[],
+  previousValue: string[]
 ) => {
   const val = e.target.value;
   if (val !== '') {
@@ -155,11 +155,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
 
   useEffect(() => {
     // HACK there should definitely be a way of doing this without creating 2 sources of truth.
-    setParentError?.(
-      chipsError
-        .map((val, idx) => (val === true || typeof val === 'string' ? idx : -1))
-        .filter((val) => val !== -1)
-    );
+    setParentError?.(chipsError);
   }, [chipsError, setParentError]);
 
   return (
@@ -191,7 +187,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
           const newValue = addValue(
             e as unknown as AddValueEvent,
             setValue,
-            value,
+            value
           );
           if (newValue) {
             setChipsErrors([...chipsError, await valuesValidator(newValue)]);
@@ -346,7 +342,17 @@ interface ArrayTextInputProps extends AutocompleteArrayInputProps {
     Partial<AvatarProps> & { value: string } & Record<string, any>
   >;
   chipLabel?: (validationData: Record<string, any>) => string | undefined;
-  setParentError?: React.Dispatch<React.SetStateAction<number[]>>;
+  setParentError?: React.Dispatch<
+    React.SetStateAction<
+      (
+        | string
+        | boolean
+        | {
+            avatar: Record<string, any>;
+          }
+      )[]
+    >
+  >;
 }
 
 export type { ArrayTextInputProps };

@@ -1,6 +1,9 @@
 import { useEffect, useRef, EffectCallback, DependencyList } from 'react';
 
-const useEffectAfterMount = (cb: EffectCallback, dependencies: DependencyList | undefined) => {
+const useEffectAfterMount = (
+  cb: EffectCallback,
+  dependencies: DependencyList | undefined
+) => {
   const mounted = useRef(true);
 
   useEffect(() => {
