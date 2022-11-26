@@ -20,13 +20,15 @@ import useEffectAfterMount from '@/src/hooks/useEffectAfterMount';
 const addValue = (
   e: AddValueEvent,
   setValue: (...args: any[]) => void,
-  previousValue: string[]
+  previousValue: string[],
+  setInputLength: React.Dispatch<React.SetStateAction<number>>
 ) => {
   const val = e.target.value;
   if (val !== '') {
     // prevent empty tags
     setValue([...new Set([...previousValue, val])]); // update values (cast to set to make unique)
     e.target.value = ''; // remove current value from the input itself (clear it)
+    setInputLength(0);
     return val;
   }
   return undefined;
@@ -97,6 +99,8 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   const [focusedTag, setFocusedTag] = useState(-1);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const anchorRef = useRef<HTMLDivElement | null>(null);
+  const [inputLength, setInputLength] = useState(0);
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const moveFocus = (tagIndex: number) => {
     if (tagIndex === -1) {
@@ -155,7 +159,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
     <TextField
       name={name}
       onBlur={async (e) => {
-        const newValue = addValue(e, setValue, value);
+        const newValue = addValue(e, setValue, value, setInputLength);
         if (newValue) {
           setChipsErrors([...chipsError, await valuesValidator(newValue)]);
         }
@@ -180,7 +184,8 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
           const newValue = addValue(
             e as unknown as AddValueEvent,
             setValue,
-            value
+            value,
+            setInputLength
           );
           if (newValue) {
             setChipsErrors([...chipsError, await valuesValidator(newValue)]);
@@ -195,6 +200,9 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
           deleteTag(value.length - 1);
         }
       }}
+      onChange={(e) => {
+        setInputLength(e.target.value.length);
+      }}
       ref={ref}
       variant="outlined"
       error={(isTouched || isSubmitted) && invalid}
@@ -207,75 +215,82 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
       }}
       InputProps={{
         ref: anchorRef,
-        startAdornment: value.map((val, idx) => {
-          const chipLabelString = chipLabel
-            ? chipLabel(convertToPropsObject(chipsError[idx])) ?? val
-            : val;
-          const isLoadingError = idx >= chipsError.length;
-          const isError =
-            idx < chipsError.length &&
-            (chipsError[idx] === true || typeof chipsError[idx] === 'string');
-          let tooltipTitle = '';
-          if (isError && typeof chipsError[idx] === 'string') {
-            tooltipTitle = chipsError[idx] as string;
-          } else if (!isError) {
-            tooltipTitle = chipLabelString === val ? '' : val;
-          }
+        startAdornment:
+          value.length > 0 &&
+          value.map((val, idx) => {
+            const chipLabelString = chipLabel
+              ? chipLabel(convertToPropsObject(chipsError[idx])) ?? val
+              : val;
+            const isLoadingError = idx >= chipsError.length;
+            const isError =
+              idx < chipsError.length &&
+              (chipsError[idx] === true || typeof chipsError[idx] === 'string');
+            let tooltipTitle = '';
+            if (isError && typeof chipsError[idx] === 'string') {
+              tooltipTitle = chipsError[idx] as string;
+            } else if (!isError) {
+              tooltipTitle = chipLabelString === val ? '' : val;
+            }
 
-          return (
-            <Tooltip
-              key={Math.random()}
-              title={translate(tooltipTitle)}
-              data-tag-index={idx}
-            >
-              <Chip
-                label={chipLabelString}
-                color={isError ? 'error' : undefined}
-                variant="outlined"
-                icon={
-                  <ChipIcon isLoadingError={isLoadingError} isError={isError} />
-                }
-                avatar={
-                  Avatar && !isLoadingError && !isError ? (
-                    <Avatar
-                      value={val}
-                      {...(convertToPropsObject(chipsError[idx])?.avatar ?? {})}
+            return (
+              <Tooltip
+                key={Math.random()}
+                title={translate(tooltipTitle)}
+                data-tag-index={idx}
+              >
+                <Chip
+                  label={chipLabelString}
+                  color={isError ? 'error' : undefined}
+                  variant="outlined"
+                  icon={
+                    <ChipIcon
+                      isLoadingError={isLoadingError}
+                      isError={isError}
                     />
-                  ) : undefined
-                }
-                size="small"
-                onDelete={() => deleteTag(idx)}
-                sx={{
-                  mr: 1,
-                  mt: 1,
-                  mb: 'auto',
-                }}
-                onClick={() => {
-                  if (inputRef.current) {
-                    inputRef.current.value = value[idx];
-                    deleteTag(idx);
                   }
-                }}
-                onKeyDown={(e) => {
-                  // handle delete
-                  if (['Backspace', 'Delete'].includes(e.key)) {
-                    deleteTag(idx);
+                  avatar={
+                    Avatar && !isLoadingError && !isError ? (
+                      <Avatar
+                        value={val}
+                        {...(convertToPropsObject(chipsError[idx])?.avatar ??
+                          {})}
+                      />
+                    ) : undefined
                   }
-
-                  // handle edit
-                  if (e.key === 'Enter') {
-                    e.stopPropagation();
-                    e.preventDefault();
+                  size="small"
+                  onDelete={() => deleteTag(idx)}
+                  sx={{
+                    mr: 1,
+                    mt: 1,
+                    mb: 'auto',
+                  }}
+                  onClick={() => {
                     if (inputRef.current) {
                       inputRef.current.value = value[idx];
+                      setInputLength(value[idx].length);
                       deleteTag(idx);
                     }
-                  }
-                }}
-              />
-            </Tooltip>
-          );
-        }),
+                  }}
+                  onKeyDown={(e) => {
+                    // handle delete
+                    if (['Backspace', 'Delete'].includes(e.key)) {
+                      deleteTag(idx);
+                    }
+
+                    // handle edit
+                    if (e.key === 'Enter') {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      if (inputRef.current) {
+                        inputRef.current.value = value[idx];
+                        deleteTag(idx);
+                      }
+                    }
+                  }}
+                />
+              </Tooltip>
+            );
+          }),
         sx: {
           display: 'flex',
           flexWrap: 'wrap',
@@ -287,6 +302,15 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
           display: 'block',
           flex: '1 1',
         },
+        onFocus: () => {
+          setIsInputFocused(true);
+        },
+        onBlur: () => {
+          setIsInputFocused(false);
+        },
+      }}
+      InputLabelProps={{
+        shrink: isInputFocused || (inputLength ?? 0) > 0 || value.length > 0,
       }}
     />
   );
