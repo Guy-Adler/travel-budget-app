@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
@@ -21,14 +21,12 @@ const addValue = (
   e: AddValueEvent,
   setValue: (...args: any[]) => void,
   previousValue: string[],
-  setInputLength: React.Dispatch<React.SetStateAction<number>>
 ) => {
   const val = e.target.value;
   if (val !== '') {
     // prevent empty tags
     setValue([...new Set([...previousValue, val])]); // update values (cast to set to make unique)
     e.target.value = ''; // remove current value from the input itself (clear it)
-    setInputLength(0);
     return val;
   }
   return undefined;
@@ -76,9 +74,18 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   valuesValidator = () => true,
   Avatar,
   chipLabel,
+  setParentError,
   ...rest
 }) => {
   const translate = useTranslate();
+  const [chipsError, setChipsErrors] = useState<
+    (string | boolean | { avatar: Record<string, any> })[]
+  >([]);
+  const [focusedTag, setFocusedTag] = useState(-1);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const anchorRef = useRef<HTMLDivElement | null>(null);
+  const [isInputFocused, setIsInputFocused] = useState(false);
+
   const {
     field: { name, onBlur: fieldOnBlur, onChange: setValue, ref, value },
     fieldState: { isTouched, invalid, error },
@@ -92,15 +99,6 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
     defaultValue: [],
     ...rest,
   }) as ArrayTextUseInputValue;
-
-  const [chipsError, setChipsErrors] = useState<
-    (string | boolean | { avatar: Record<string, any> })[]
-  >([]);
-  const [focusedTag, setFocusedTag] = useState(-1);
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const anchorRef = useRef<HTMLDivElement | null>(null);
-  const [inputLength, setInputLength] = useState(0);
-  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const moveFocus = (tagIndex: number) => {
     if (tagIndex === -1) {
@@ -155,11 +153,20 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
     }
   }, [focusedTag, chipsError.length]);
 
+  useEffect(() => {
+    // HACK there should definitely be a way of doing this without creating 2 sources of truth.
+    setParentError?.(
+      chipsError
+        .map((val, idx) => (val === true || typeof val === 'string' ? idx : -1))
+        .filter((val) => val !== -1)
+    );
+  }, [chipsError, setParentError]);
+
   return (
     <TextField
       name={name}
       onBlur={async (e) => {
-        const newValue = addValue(e, setValue, value, setInputLength);
+        const newValue = addValue(e, setValue, value);
         if (newValue) {
           setChipsErrors([...chipsError, await valuesValidator(newValue)]);
         }
@@ -185,7 +192,6 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
             e as unknown as AddValueEvent,
             setValue,
             value,
-            setInputLength
           );
           if (newValue) {
             setChipsErrors([...chipsError, await valuesValidator(newValue)]);
@@ -199,9 +205,6 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
         ) {
           deleteTag(value.length - 1);
         }
-      }}
-      onChange={(e) => {
-        setInputLength(e.target.value.length);
       }}
       ref={ref}
       variant="outlined"
@@ -235,7 +238,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
             return (
               <Tooltip
                 key={Math.random()}
-                title={translate(tooltipTitle)}
+                title={!isError ? tooltipTitle : translate(tooltipTitle)}
                 data-tag-index={idx}
               >
                 <Chip
@@ -243,10 +246,12 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
                   color={isError ? 'error' : undefined}
                   variant="outlined"
                   icon={
-                    <ChipIcon
-                      isLoadingError={isLoadingError}
-                      isError={isError}
-                    />
+                    isLoadingError || isError ? (
+                      <ChipIcon
+                        isLoadingError={isLoadingError}
+                        isError={isError}
+                      />
+                    ) : undefined
                   }
                   avatar={
                     Avatar && !isLoadingError && !isError ? (
@@ -267,7 +272,6 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
                   onClick={() => {
                     if (inputRef.current) {
                       inputRef.current.value = value[idx];
-                      setInputLength(value[idx].length);
                       deleteTag(idx);
                     }
                   }}
@@ -310,7 +314,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
         },
       }}
       InputLabelProps={{
-        shrink: isInputFocused || (inputLength ?? 0) > 0 || value.length > 0,
+        shrink: isInputFocused || value.length > 0,
       }}
     />
   );
@@ -323,6 +327,7 @@ ArrayTextInput.defaultProps = {
   valuesValidator: () => false,
   Avatar: undefined,
   chipLabel: undefined,
+  setParentError: undefined,
 };
 
 export type Validator = (
@@ -341,6 +346,7 @@ interface ArrayTextInputProps extends AutocompleteArrayInputProps {
     Partial<AvatarProps> & { value: string } & Record<string, any>
   >;
   chipLabel?: (validationData: Record<string, any>) => string | undefined;
+  setParentError?: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 export type { ArrayTextInputProps };

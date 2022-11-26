@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -76,10 +76,12 @@ interface FormData {
 
 const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
   const translate = useTranslate();
+  const [sharesError, setSharesError] = useState<number[]>([]);
 
   const removeOutsideDataAndResubmit = (data: FormData) => {
     const { shares, ...rest } = data;
     // TODO add the shared emails after.
+    // const validEmails = shares.filter((_, idx) => !sharesError.includes(idx));
     return rest;
   };
 
@@ -92,16 +94,17 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
         <CreateBase redirect={false} transform={removeOutsideDataAndResubmit}>
           <Form>
             <TextInput source="name" validate={required()} fullWidth />
-            <ArrayTextInput
-              source="shares"
-              label="resources.trips.shares"
-              newTagKeys={[' ']}
-              valuesValidator={validateEmail}
-              Avatar={Avatar}
-              chipLabel={(data) =>
-                data?.avatar?.identity?.fullName ?? undefined
-              }
-            />
+              <ArrayTextInput
+                source="shares"
+                label="resources.trips.shares"
+                newTagKeys={[' ']}
+                valuesValidator={validateEmail}
+                Avatar={Avatar}
+                chipLabel={(data) =>
+                  data?.avatar?.identity?.fullName ?? undefined
+                }
+                setParentError={setSharesError}
+              />
             <SaveButton />
           </Form>
         </CreateBase>
