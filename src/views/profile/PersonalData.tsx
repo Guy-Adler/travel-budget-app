@@ -9,7 +9,7 @@ interface PersonalDataProps {
 
 const TextInputNoLabel = styled((props: TextInputProps) => (
   // eslint-disable-next-line react/jsx-props-no-spreading
-  <TextInput {...props} label={false} />
+  <TextInput {...props} variant="filled" label={false} />
 ))({
   '& legend': { display: 'none' },
   '& fieldset': { top: 0 },

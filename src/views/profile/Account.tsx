@@ -82,6 +82,7 @@ export const AccountSkeleton: React.FC = () => {
         can_be_shared: <BooleanInput source="can_be_shared" label={false} />,
         password: (
           <PasswordInput
+            variant="filled"
             source="password"
             autoComplete="new-password"
             label={false}
@@ -90,6 +91,7 @@ export const AccountSkeleton: React.FC = () => {
         ),
         confirmPassword: (
           <PasswordInput
+            variant="filled"
             source="confirmPassword"
             autoComplete="new-password"
             label={false}

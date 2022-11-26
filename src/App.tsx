@@ -1,6 +1,13 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import { Admin, Resource, CustomRoutes, ListGuesser } from 'react-admin';
+import {
+  Admin,
+  Resource,
+  CustomRoutes,
+  ListGuesser,
+  defaultTheme,
+} from 'react-admin';
+import { createTheme } from '@mui/material/styles';
 import { supabaseAuthProvider } from './providers/auth';
 import { supabaseDataProvider, ResourcesOptions } from './providers/data';
 import i18nProvider from './providers/i18n';
@@ -53,6 +60,26 @@ const resources: ResourcesOptions = {
   ],
 };
 
+const theme = createTheme({
+  ...defaultTheme,
+  components: {
+    MuiTextField: {
+      defaultProps: {
+        variant: 'outlined' as const,
+        margin: 'dense' as const,
+        size: 'small' as const,
+      },
+    },
+    MuiFormControl: {
+      defaultProps: {
+        variant: 'outlined' as const,
+        margin: 'dense' as const,
+        size: 'small' as const,
+      },
+    },
+  },
+});
+
 const App = () => {
   useTitle('Travel Budget App', false);
   return (
@@ -65,6 +92,7 @@ const App = () => {
       requireAuth
       i18nProvider={i18nProvider}
       disableTelemetry
+      theme={theme}
     >
       <CustomRoutes>
         <Route path="/profile" element={<Profile />} />
