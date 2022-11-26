@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import TextField from '@mui/material/TextField';
 import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
@@ -15,6 +15,7 @@ import {
   UseInputValue,
   useTranslate,
 } from 'react-admin';
+import useEffectAfterMount from '@/src/hooks/useEffectAfterMount';
 
 const addValue = (
   e: AddValueEvent,
@@ -138,7 +139,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
     setFocusedTag(-1);
   };
 
-  useEffect(() => {
+  useEffectAfterMount(() => {
     if (
       focusedTag < -1 ||
       !Number.isInteger(focusedTag) ||
