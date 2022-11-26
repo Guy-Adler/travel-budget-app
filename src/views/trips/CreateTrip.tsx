@@ -3,7 +3,14 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import AvatarMui from '@mui/material/Avatar';
-import { CreateBase, useTranslate, Form, SaveButton } from 'react-admin';
+import {
+  CreateBase,
+  useTranslate,
+  Form,
+  SaveButton,
+  TextInput,
+  required,
+} from 'react-admin';
 import ArrayTextInput, {
   Validator,
   ArrayTextInputProps,
@@ -55,18 +62,24 @@ const validateEmail: Validator = async (value: string) => {
 };
 
 const Avatar: ArrayTextInputProps['Avatar'] = ({ identity, ...props }) => (
-  // eslint-disable-next-line react/jsx-props-no-spreading
   <AvatarMui
+    // eslint-disable-next-line react/jsx-props-no-spreading
     {...props}
     src={typeof identity?.avatar === 'string' ? identity.avatar : undefined}
   />
 );
 
+interface FormData {
+  shares: string[];
+  name: string;
+}
+
 const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
   const translate = useTranslate();
 
-  const removeOutsideDataAndResubmit = (data) => {
+  const removeOutsideDataAndResubmit = (data: FormData) => {
     const { shares, ...rest } = data;
+    // TODO add the shared emails after.
     return rest;
   };
 
@@ -78,6 +91,7 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
       <DialogContent>
         <CreateBase redirect={false} transform={removeOutsideDataAndResubmit}>
           <Form>
+            <TextInput source="name" validate={required()} fullWidth />
             <ArrayTextInput
               source="shares"
               label="resources.trips.shares"
