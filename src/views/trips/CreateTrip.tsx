@@ -1,8 +1,12 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import AvatarMui from '@mui/material/Avatar';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import ListItemText from '@mui/material/ListItemText';
+import Stack from '@mui/material/Stack';
+import CreateIcon from '@mui/icons-material/Create';
 import {
   CreateBase,
   useTranslate,
@@ -18,6 +22,7 @@ import ArrayTextInput, {
   Validator,
   ArrayTextInputProps,
 } from '@/src/components/ArrayTextInput';
+import SelectInputNotNull from '@/src/components/SelectInputNotNull';
 import client from '@/src/providers/supabase';
 import type { Schema, UUID } from '@/src/types/schema';
 import { createIdentity } from '@/src/providers/auth';
@@ -75,6 +80,7 @@ const Avatar: ArrayTextInputProps['Avatar'] = ({ identity, ...props }) => (
 interface FormData {
   shares: string[];
   name: string;
+  canEdit: number;
 }
 
 const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
@@ -84,6 +90,7 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
   const [sharesError, setSharesError] = useState<
     (string | boolean | { avatar: Record<string, any> })[]
   >([]);
+  const canEditValue = useRef<boolean>(false);
 
   const getShareTo = useCallback(
     () =>
@@ -96,7 +103,8 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
   );
 
   const removeOutsideDataAndResubmit = (data: FormData) => {
-    const { shares, ...rest } = data;
+    const { shares, canEdit, ...rest } = data;
+    canEditValue.current = canEdit === 1;
     return rest;
   };
 
@@ -109,9 +117,10 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
         (meta.shareTo as string[]).map((uid) => ({
           trip_id: data.id,
           user_id: uid as UUID,
+          can_edit: canEditValue.current,
         }))
       );
-      notify('Shared with emails linked to discoverable users.');
+      notify('Shared with emails linked to discoverable users.', { type: 'success' });
     }
   };
 
@@ -128,17 +137,43 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
         >
           <Form>
             <TextInput source="name" validate={required()} fullWidth />
-            <ArrayTextInput
-              source="shares"
-              label="resources.trips.shares"
-              newTagKeys={[' ']}
-              valuesValidator={validateEmail}
-              Avatar={Avatar}
-              chipLabel={(data) =>
-                data?.avatar?.identity?.fullName ?? undefined
-              }
-              setParentError={setSharesError}
-            />
+            <Stack direction="row" gap={2}>
+              <ArrayTextInput
+                source="shares"
+                label="resources.trips.shares"
+                newTagKeys={[' ']}
+                valuesValidator={validateEmail}
+                Avatar={Avatar}
+                chipLabel={(data) =>
+                  data?.avatar?.identity?.fullName ?? undefined
+                }
+                setParentError={setSharesError}
+              />
+              <SelectInputNotNull
+                source="canEdit"
+                defaultValue={0}
+                choices={[
+                  {
+                    value: 0,
+                    render: (
+                      <Stack direction="row" alignItems="center">
+                        <VisibilityIcon sx={{ mr: 1, color: 'rgba(0, 0, 0, 0.54)' }} />
+                        <ListItemText>Viewer</ListItemText>
+                      </Stack>
+                    ),
+                  },
+                  {
+                    value: 1,
+                    render: (
+                      <Stack direction="row" alignItems="center">
+                        <CreateIcon sx={{ mr: 1, color: 'rgba(0, 0, 0, 0.54)' }} />
+                        <ListItemText>Editor</ListItemText>
+                      </Stack>
+                    ),
+                  },
+                ]}
+              />
+            </Stack>
             <SaveButton />
           </Form>
         </CreateBase>
