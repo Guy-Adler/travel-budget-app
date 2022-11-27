@@ -8,7 +8,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import LoadingIcon from '@mui/icons-material/Sync';
 import type { SvgIconProps } from '@mui/material/SvgIcon';
 import { keyframes } from '@mui/material/styles';
-import type { ControllerRenderProps } from 'react-hook-form';
+import { useFormContext, ControllerRenderProps } from 'react-hook-form';
 import {
   useInput,
   AutocompleteArrayInputProps,
@@ -85,6 +85,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const anchorRef = useRef<HTMLDivElement | null>(null);
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const form = useFormContext();
 
   const {
     field: { name, onBlur: fieldOnBlur, onChange: setValue, ref, value },
@@ -95,7 +96,6 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
     onChange,
     onBlur,
     source,
-    validate,
     defaultValue: [],
     ...rest,
   }) as ArrayTextUseInputValue;
@@ -134,10 +134,19 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
 
   const deleteTag = (idx: number) => {
     setValue([...value.slice(0, idx), ...value.slice(idx + 1)]);
-    setChipsErrors((errors) => [
-      ...errors.slice(0, idx),
-      ...errors.slice(idx + 1),
-    ]);
+
+    const newErrors = [
+      ...chipsError.slice(0, idx),
+      ...chipsError.slice(idx + 1),
+    ];
+    setChipsErrors(newErrors);
+
+    if (newErrors.filter((err) => err === true || typeof err === 'string').length > 0) {
+      form.setError(`${source}-chipsError`, { type: 'custom' });
+    } else {
+      form.clearErrors(`${source}-chipsError`);
+    }
+
     setFocusedTag(-1);
   };
 
@@ -164,7 +173,13 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
       onBlur={async (e) => {
         const newValue = addValue(e, setValue, value);
         if (newValue) {
-          setChipsErrors([...chipsError, await valuesValidator(newValue)]);
+          const newErrors = [...chipsError, await valuesValidator(newValue)];
+          setChipsErrors(newErrors);
+          if (newErrors.filter((err) => err === true || typeof err === 'string').length > 0) {
+            form.setError(`${source}-chipsError`, { type: 'custom' });
+          } else {
+            form.clearErrors(`${source}-chipsError`);
+          }
         }
         fieldOnBlur();
       }}
@@ -190,7 +205,13 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
             value
           );
           if (newValue) {
-            setChipsErrors([...chipsError, await valuesValidator(newValue)]);
+            const newErrors = [...chipsError, await valuesValidator(newValue)];
+            setChipsErrors(newErrors);
+            if (newErrors.filter((err) => err === true || typeof err === 'string').length > 0) {
+              form.setError(`${source}-chipsError`, { type: 'custom' });
+            } else {
+              form.clearErrors(`${source}-chipsError`);
+            }
           }
         }
 
