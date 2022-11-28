@@ -1,9 +1,7 @@
 import type { AvatarProps } from '@mui/material/Avatar';
-import type {
-  AutocompleteArrayInputProps,
-  UseInputValue
-} from 'react-admin';
+import type { AutocompleteArrayInputProps, UseInputValue } from 'react-admin';
 import type { ControllerRenderProps } from 'react-hook-form';
+import type IndexedMap from './IndexedMap';
 
 export type Validator = (
   value: string
@@ -12,6 +10,35 @@ export type Validator = (
   | string
   | { avatar: Record<string, any> }
   | Promise<boolean | string | { avatar: Record<string, any> }>;
+
+type LoadingValues = {
+  loading: true;
+  error: null;
+  data: null;
+};
+
+type LoadedValues = {
+  loading: false;
+} & (
+  | {
+      error: true | string;
+      data: {
+        value: null;
+        meta: null;
+      };
+    }
+  | {
+      error: null;
+      data: {
+        value: string;
+        meta: {
+          avatar?: Record<string, any>;
+        };
+      };
+    }
+);
+
+type Value = IndexedMap<string, LoadingValues | LoadedValues>;
 
 export interface ArrayTextInputProps extends AutocompleteArrayInputProps {
   source: string;
@@ -36,7 +63,7 @@ export interface ArrayTextInputProps extends AutocompleteArrayInputProps {
 
 export interface ArrayTextUseInputValue extends UseInputValue {
   field: Omit<ControllerRenderProps, 'value'> & {
-    value: string[];
+    value: Value;
   };
 }
 

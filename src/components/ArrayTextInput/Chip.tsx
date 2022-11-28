@@ -13,13 +13,14 @@ interface ChipProps {
   Avatar: ArrayTextInputProps['Avatar'];
   chipsError: (string | boolean | { avatar: Record<string, any> })[];
   chipLabelString: string;
-  deleteTag: (idx: number) => void;
-  editTag: (idx: number) => void;
+  deleteTag: (idx: string) => void;
+  editTag: (idx: string) => void;
   idx: number;
   isError: boolean;
   isLoadingError: boolean;
   tooltipTitle: string;
-  val: ArrayTextUseInputValue['field']['value'];
+  val: Exclude<ReturnType<ArrayTextUseInputValue['field']['value']['get']>, undefined>;
+  renderValue: Exclude<ReturnType<ArrayTextUseInputValue['field']['value']['getKeyByIndex']>, undefined>;
 }
 
 const Chip: React.FC<ChipProps> = ({
@@ -33,6 +34,7 @@ const Chip: React.FC<ChipProps> = ({
   isLoadingError,
   tooltipTitle,
   val,
+  renderValue,
 }) => {
   const translate = useTranslate();
   return (
@@ -58,26 +60,26 @@ const Chip: React.FC<ChipProps> = ({
           ) : undefined
         }
         size="small"
-        onDelete={() => deleteTag(idx)}
+        onDelete={() => deleteTag(renderValue)}
         sx={{
           mr: 1,
           mt: 1,
           mb: 'auto',
         }}
         onClick={() => {
-          editTag(idx);
+          editTag(renderValue);
         }}
         onKeyDown={(e) => {
           // handle delete
           if (['Backspace', 'Delete'].includes(e.key)) {
-            deleteTag(idx);
+            deleteTag(renderValue);
           }
 
           // handle edit
           if (e.key === 'Enter') {
             e.stopPropagation();
             e.preventDefault();
-            editTag(idx);
+            editTag(renderValue);
           }
         }}
       />
