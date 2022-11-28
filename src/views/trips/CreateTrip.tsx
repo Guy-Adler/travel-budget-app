@@ -21,7 +21,7 @@ import {
 import ArrayTextInput, {
   Validator,
   ArrayTextInputProps,
-} from '@/src/components/ArrayTextInput';
+} from '@/src/components/ArrayTextInput/';
 import SelectInputNotNull from '@/src/components/SelectInputNotNull';
 import client from '@/src/providers/supabase';
 import type { Schema, UUID } from '@/src/types/schema';

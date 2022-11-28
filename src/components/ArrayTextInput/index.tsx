@@ -1,21 +1,20 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import TextField from '@mui/material/TextField';
-import Chip from '@mui/material/Chip';
-import Tooltip from '@mui/material/Tooltip';
-import type { AvatarProps } from '@mui/material/Avatar';
-import ErrorIcon from '@mui/icons-material/Error';
-import LoadingIcon from '@mui/icons-material/Sync';
-import type { SvgIconProps } from '@mui/material/SvgIcon';
-import { keyframes } from '@mui/material/styles';
-import { useFormContext, ControllerRenderProps } from 'react-hook-form';
 import {
   useInput,
-  AutocompleteArrayInputProps,
-  UseInputValue,
-  useTranslate,
+  useTranslate
 } from 'react-admin';
+import { useFormContext } from 'react-hook-form';
 import useEffectAfterMount from '@/src/hooks/useEffectAfterMount';
+import Chip from './Chip';
+import type {
+  AddValueEvent,
+  ArrayTextInputProps,
+  ArrayTextUseInputValue
+} from './types';
+import {
+  convertToPropsObject
+} from './utils';
 
 const addValue = (
   e: AddValueEvent,
@@ -32,38 +31,6 @@ const addValue = (
   return undefined;
 };
 
-const spin = keyframes`
-  from {
-    transform: rotate(360deg);
-  }
-  to {
-    transform: rotate(0deg);
-  }
-`;
-
-const ChipIcon: React.FC<
-  SvgIconProps & { isLoadingError: boolean; isError: boolean }
-> = ({ isLoadingError, isError, ...props }) => {
-  if (isLoadingError) {
-    return (
-      <LoadingIcon {...props} sx={{ animation: `${spin} 1s infinite ease` }} />
-    );
-  }
-  if (isError) {
-    return <ErrorIcon {...props} />;
-  }
-  return null;
-};
-
-const convertToPropsObject = (
-  value: Awaited<ReturnType<Validator>>
-): Record<string, any> => {
-  if (typeof value === 'string' || typeof value === 'boolean') {
-    return {};
-  }
-  return value;
-};
-
 const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   onChange,
   onBlur,
@@ -76,7 +43,7 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   chipLabel,
   setParentError,
   ...rest
-}) => {
+}: ArrayTextInputProps) => {
   const translate = useTranslate();
   const [chipsError, setChipsErrors] = useState<
     (string | boolean | { avatar: Record<string, any> })[]
@@ -148,6 +115,13 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
     }
 
     setFocusedTag(-1);
+  };
+
+  const editTag = (idx: number) => {
+    if (inputRef.current) {
+      inputRef.current.value = value[idx];
+      deleteTag(idx);
+    }
   };
 
   useEffectAfterMount(() => {
@@ -253,63 +227,19 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
             }
 
             return (
-              <Tooltip
+              <Chip
                 key={Math.random()}
-                title={!isError ? tooltipTitle : translate(tooltipTitle)}
-                data-tag-index={idx}
-              >
-                <Chip
-                  label={chipLabelString}
-                  color={isError ? 'error' : undefined}
-                  variant="outlined"
-                  icon={
-                    isLoadingError || isError ? (
-                      <ChipIcon
-                        isLoadingError={isLoadingError}
-                        isError={isError}
-                      />
-                    ) : undefined
-                  }
-                  avatar={
-                    Avatar && !isLoadingError && !isError ? (
-                      <Avatar
-                        value={val}
-                        {...(convertToPropsObject(chipsError[idx])?.avatar ??
-                          {})}
-                      />
-                    ) : undefined
-                  }
-                  size="small"
-                  onDelete={() => deleteTag(idx)}
-                  sx={{
-                    mr: 1,
-                    mt: 1,
-                    mb: 'auto',
-                  }}
-                  onClick={() => {
-                    if (inputRef.current) {
-                      inputRef.current.value = value[idx];
-                      deleteTag(idx);
-                    }
-                  }}
-                  onKeyDown={(e) => {
-                    // handle delete
-                    if (['Backspace', 'Delete'].includes(e.key)) {
-                      deleteTag(idx);
-                    }
-
-                    // handle edit
-                    if (e.key === 'Enter') {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      if (inputRef.current) {
-                        inputRef.current.value = value[idx];
-                        deleteTag(idx);
-                      }
-                    }
-                  }}
-                />
-              </Tooltip>
+                Avatar={Avatar}
+                chipsError={chipsError}
+                chipLabelString={chipLabelString}
+                deleteTag={deleteTag}
+                editTag={editTag}
+                idx={idx}
+                isError={isError}
+                isLoadingError={isLoadingError}
+                tooltipTitle={tooltipTitle}
+                val={val}
+              />
             );
           }),
         sx: {
@@ -346,45 +276,3 @@ ArrayTextInput.defaultProps = {
   chipLabel: undefined,
   setParentError: undefined,
 };
-
-export type Validator = (
-  value: string
-) =>
-  | boolean
-  | string
-  | { avatar: Record<string, any> }
-  | Promise<boolean | string | { avatar: Record<string, any> }>;
-
-interface ArrayTextInputProps extends AutocompleteArrayInputProps {
-  source: string;
-  newTagKeys?: string[];
-  valuesValidator?: Validator;
-  Avatar?: React.ComponentType<
-    Partial<AvatarProps> & { value: string } & Record<string, any>
-  >;
-  chipLabel?: (validationData: Record<string, any>) => string | undefined;
-  setParentError?: React.Dispatch<
-    React.SetStateAction<
-      (
-        | string
-        | boolean
-        | {
-            avatar: Record<string, any>;
-          }
-      )[]
-    >
-  >;
-}
-
-export type { ArrayTextInputProps };
-
-interface ArrayTextUseInputValue extends UseInputValue {
-  field: Omit<ControllerRenderProps, 'value'> & {
-    value: string[];
-  };
-}
-
-type AddValueEvent = React.FocusEvent<
-  HTMLInputElement | HTMLTextAreaElement,
-  Element
->;
