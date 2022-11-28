@@ -102,6 +102,14 @@ const customEnglishMessages: TranslationMessages = {
     created_at: 'Created %{date} by %{name}',
     last_updated_at: 'Last updated %{date} by %{name}',
   },
+  inputs: {
+    array_text_input: {
+      errors: {
+        values_loading: 'Some of the values are still loading.',
+        errors: 'Some of the values have errors.',
+      }
+    }
+  },
 };
 
 export default customEnglishMessages;

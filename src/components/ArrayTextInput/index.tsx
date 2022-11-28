@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import { useInput, useTranslate } from 'react-admin';
-import { useFormContext, UseFormReturn } from 'react-hook-form';
 import useEffectAfterMount from '@/src/hooks/useEffectAfterMount';
 import IndexedMap from './IndexedMap';
 import Chip from './Chip';
@@ -68,19 +67,6 @@ const handleValidation = async (
   return newValues;
 };
 
-const updateErrorState = (
-  value: ArrayTextUseInputValue['field']['value'],
-  setError: UseFormReturn['setError'],
-  clearErrors: UseFormReturn['clearErrors'],
-  source: string
-) => {
-  if ([...value.values()].filter((val) => val.error !== null).length > 0) {
-    setError(`${source}-chipsError`, { type: 'custom' });
-  } else {
-    clearErrors(`${source}-chipsError`);
-  }
-};
-
 const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   onChange,
   onBlur,
@@ -98,7 +84,6 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const anchorRef = useRef<HTMLDivElement | null>(null);
   const [isInputFocused, setIsInputFocused] = useState(false);
-  const form = useFormContext();
 
   const {
     field: { name, onBlur: fieldOnBlur, onChange: setValue, ref, value },
@@ -110,6 +95,19 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
     onBlur,
     source,
     defaultValue: [],
+    validate: [
+      (val: Value) => {
+        const v = [...val.values()].find(
+          (el) => el.loading || el.error !== null
+        );
+        if (v === undefined) return undefined;
+        if (v.loading === true) return translate('inputs.array_text_input.errors.values_loading');
+        return translate('inputs.array_text_input.errors.errors');
+      },
+      ...(validate === undefined
+        ? []
+        : [validate].filter((val) => val !== undefined).flat()),
+    ],
     ...rest,
   }) as ArrayTextUseInputValue;
 
@@ -151,8 +149,6 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
     newValues.delete(displayValue);
     setValue(newValues);
 
-    updateErrorState(newValues, form.setError, form.clearErrors, source);
-
     setFocusedTag(-1);
   };
 
@@ -181,15 +177,12 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
       onBlur={async (e) => {
         const previousValue = value;
         const newValue = addValue(e, setValue, value);
-        const newValues = await handleValidation(
+        await handleValidation(
           newValue,
           setValue,
           previousValue,
           valuesValidator
         );
-        if (newValues) {
-          updateErrorState(newValues, form.setError, form.clearErrors, source);
-        }
         fieldOnBlur();
       }}
       onKeyDown={async (e) => {
@@ -214,20 +207,12 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
             setValue,
             value
           );
-          const newValues = await handleValidation(
+          await handleValidation(
             newValue,
             setValue,
             previousValue,
             valuesValidator
           );
-          if (newValues) {
-            updateErrorState(
-              newValues,
-              form.setError,
-              form.clearErrors,
-              source
-            );
-          }
         }
 
         // Handle tag deletion
