@@ -4,9 +4,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import LoadingIcon from '@mui/icons-material/Sync';
 import type { SvgIconProps } from '@mui/material/SvgIcon';
 import { keyframes } from '@mui/material/styles';
-import type {
-  Validator
-} from './types';
+import type { Validator } from './types';
 
 const spin = keyframes`
   from {

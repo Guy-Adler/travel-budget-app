@@ -18,8 +18,14 @@ interface ChipProps {
   isError: boolean;
   isLoadingError: boolean;
   tooltipTitle: string;
-  val: Exclude<ReturnType<ArrayTextUseInputValue['field']['value']['get']>, undefined>;
-  renderValue: Exclude<ReturnType<ArrayTextUseInputValue['field']['value']['getKeyByIndex']>, undefined>;
+  val: Exclude<
+    ReturnType<ArrayTextUseInputValue['field']['value']['get']>,
+    undefined
+  >;
+  renderValue: Exclude<
+    ReturnType<ArrayTextUseInputValue['field']['value']['getKeyByIndex']>,
+    undefined
+  >;
 }
 
 const Chip: React.FC<ChipProps> = ({
@@ -53,7 +59,7 @@ const Chip: React.FC<ChipProps> = ({
           Avatar && !isLoadingError && !isError ? (
             <Avatar
               value={val}
-              {...(convertToPropsObject((val.data ?? false))?.meta?.avatar ?? {})}
+              {...(convertToPropsObject(val.data ?? false)?.meta?.avatar ?? {})}
             />
           ) : undefined
         }

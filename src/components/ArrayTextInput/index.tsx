@@ -101,7 +101,8 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
           (el) => el.loading || el.error !== null
         );
         if (v === undefined) return undefined;
-        if (v.loading === true) return translate('inputs.array_text_input.errors.values_loading');
+        if (v.loading === true)
+          return translate('inputs.array_text_input.errors.values_loading');
         return translate('inputs.array_text_input.errors.errors');
       },
       ...(validate === undefined

@@ -20,7 +20,7 @@ const SelectInputNotNull: React.FC<SelectInputNotNullProps> = ({
 
   return (
     <Select
-      variant='standard'
+      variant="standard"
       disableUnderline
       error={(isTouched || isSubmitted) && invalid}
       {...field}

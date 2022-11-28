@@ -107,8 +107,8 @@ const customEnglishMessages: TranslationMessages = {
       errors: {
         values_loading: 'Some of the values are still loading.',
         errors: 'Some of the values have errors.',
-      }
-    }
+      },
+    },
   },
 };
 

@@ -8,8 +8,8 @@ export type Validator = (
 ) =>
   | boolean
   | string
-  | { value: string, avatar?: Record<string, any> }
-  | Promise<boolean | string | { value: string, avatar?: Record<string, any> }>;
+  | { value: string; avatar?: Record<string, any> }
+  | Promise<boolean | string | { value: string; avatar?: Record<string, any> }>;
 
 type LoadingValues = {
   loading: true;

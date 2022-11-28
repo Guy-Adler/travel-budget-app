@@ -79,7 +79,7 @@ const Avatar: ArrayTextInputProps['Avatar'] = ({ identity, ...props }) => (
     {...props}
     src={typeof identity?.avatar === 'string' ? identity?.avatar : undefined}
   />
-)
+);
 
 interface FormData {
   shares: SharesValue;
@@ -96,22 +96,24 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
 
   const removeOutsideDataAndResubmit = (data: FormData) => {
     const { shares, canEdit, ...rest } = data;
-    shareTo.current = [...shares.values()].map((val) => (val.data?.value as string));
+    shareTo.current = [...shares.values()].map(
+      (val) => val.data?.value as string
+    );
     canEditValue.current = canEdit === 1;
     return rest;
   };
 
-  const onSuccess = async (
-    data: Schema['trips'],
-  ) => {
+  const onSuccess = async (data: Schema['trips']) => {
     await client.from<Schema['shares']>('shares').insert(
-      (shareTo.current).map((uid) => ({
+      shareTo.current.map((uid) => ({
         trip_id: data.id,
         user_id: uid as UUID,
         can_edit: canEditValue.current,
       }))
     );
-    notify('Shared with emails linked to discoverable users.', { type: 'success' });
+    notify('Shared with emails linked to discoverable users.', {
+      type: 'success',
+    });
   };
 
   return (
@@ -146,7 +148,9 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
                     value: 0,
                     render: (
                       <Stack direction="row" alignItems="center">
-                        <VisibilityIcon sx={{ mr: 1, color: 'rgba(0, 0, 0, 0.54)' }} />
+                        <VisibilityIcon
+                          sx={{ mr: 1, color: 'rgba(0, 0, 0, 0.54)' }}
+                        />
                         <ListItemText>Viewer</ListItemText>
                       </Stack>
                     ),
@@ -155,7 +159,9 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
                     value: 1,
                     render: (
                       <Stack direction="row" alignItems="center">
-                        <CreateIcon sx={{ mr: 1, color: 'rgba(0, 0, 0, 0.54)' }} />
+                        <CreateIcon
+                          sx={{ mr: 1, color: 'rgba(0, 0, 0, 0.54)' }}
+                        />
                         <ListItemText>Editor</ListItemText>
                       </Stack>
                     ),
