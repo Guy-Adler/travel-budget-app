@@ -129,7 +129,9 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
         >
           <Form>
             <TextInput source="name" validate={required()} fullWidth />
-            <Stack direction="row" gap={2}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} gap={2} sx={{
+              
+            }}>
               <ArrayTextInput
                 source="shares"
                 label="resources.trips.shares"
