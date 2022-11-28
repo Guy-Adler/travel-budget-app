@@ -11,7 +11,6 @@ import type { ArrayTextInputProps, ArrayTextUseInputValue } from './types';
 
 interface ChipProps {
   Avatar: ArrayTextInputProps['Avatar'];
-  chipsError: (string | boolean | { avatar: Record<string, any> })[];
   chipLabelString: string;
   deleteTag: (idx: string) => void;
   editTag: (idx: string) => void;
@@ -25,7 +24,6 @@ interface ChipProps {
 
 const Chip: React.FC<ChipProps> = ({
   Avatar,
-  chipsError,
   chipLabelString,
   deleteTag,
   editTag,
@@ -55,7 +53,7 @@ const Chip: React.FC<ChipProps> = ({
           Avatar && !isLoadingError && !isError ? (
             <Avatar
               value={val}
-              {...(convertToPropsObject(chipsError[idx])?.avatar ?? {})}
+              {...(convertToPropsObject((val.data ?? false))?.meta?.avatar ?? {})}
             />
           ) : undefined
         }

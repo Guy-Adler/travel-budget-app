@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useRef } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -14,12 +14,11 @@ import {
   SaveButton,
   TextInput,
   required,
-  UserIdentity,
   useNotify,
-  UseCreateMutateParams,
 } from 'react-admin';
 import ArrayTextInput, {
   Validator,
+  Value as SharesValue,
   ArrayTextInputProps,
 } from '@/src/components/ArrayTextInput/';
 import SelectInputNotNull from '@/src/components/SelectInputNotNull';
@@ -67,6 +66,7 @@ const validateEmail: Validator = async (value: string) => {
   const identity = createIdentity(data[0]);
 
   return {
+    value: data[0].id,
     avatar: {
       identity,
     },
@@ -77,12 +77,12 @@ const Avatar: ArrayTextInputProps['Avatar'] = ({ identity, ...props }) => (
   <AvatarMui
     // eslint-disable-next-line react/jsx-props-no-spreading
     {...props}
-    src={typeof identity?.avatar === 'string' ? identity.avatar : undefined}
+    src={typeof identity?.avatar === 'string' ? identity?.avatar : undefined}
   />
-);
+)
 
 interface FormData {
-  shares: string[];
+  shares: SharesValue;
   name: string;
   canEdit: number;
 }
@@ -91,41 +91,27 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
   const translate = useTranslate();
   const notify = useNotify();
 
-  const [sharesError, setSharesError] = useState<
-    (string | boolean | { avatar: Record<string, any> })[]
-  >([]);
+  const shareTo = useRef<string[]>([]);
   const canEditValue = useRef<boolean>(false);
-
-  const getShareTo = useCallback(
-    () =>
-      (
-        sharesError.filter((val) => typeof val === 'object') as {
-          avatar: { identity: UserIdentity };
-        }[]
-      ).map((user) => user.avatar.identity.id),
-    [sharesError]
-  );
 
   const removeOutsideDataAndResubmit = (data: FormData) => {
     const { shares, canEdit, ...rest } = data;
+    shareTo.current = [...shares.values()].map((val) => (val.data?.value as string));
     canEditValue.current = canEdit === 1;
     return rest;
   };
 
   const onSuccess = async (
     data: Schema['trips'],
-    { meta }: UseCreateMutateParams
   ) => {
-    if (meta.shareTo) {
-      await client.from<Schema['shares']>('shares').insert(
-        (meta.shareTo as string[]).map((uid) => ({
-          trip_id: data.id,
-          user_id: uid as UUID,
-          can_edit: canEditValue.current,
-        }))
-      );
-      notify('Shared with emails linked to discoverable users.', { type: 'success' });
-    }
+    await client.from<Schema['shares']>('shares').insert(
+      (shareTo.current).map((uid) => ({
+        trip_id: data.id,
+        user_id: uid as UUID,
+        can_edit: canEditValue.current,
+      }))
+    );
+    notify('Shared with emails linked to discoverable users.', { type: 'success' });
   };
 
   return (
@@ -137,7 +123,7 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
         <CreateBase
           redirect={false}
           transform={removeOutsideDataAndResubmit}
-          mutationOptions={{ onSuccess, meta: { shareTo: getShareTo() } }}
+          mutationOptions={{ onSuccess }}
         >
           <Form>
             <TextInput source="name" validate={required()} fullWidth />
@@ -151,7 +137,6 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
                 chipLabel={(data) =>
                   data?.avatar?.identity?.fullName ?? undefined
                 }
-                setParentError={setSharesError}
               />
               <SelectInputNotNull
                 source="canEdit"

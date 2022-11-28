@@ -8,8 +8,8 @@ export type Validator = (
 ) =>
   | boolean
   | string
-  | { avatar: Record<string, any> }
-  | Promise<boolean | string | { avatar: Record<string, any> }>;
+  | { value: string, avatar?: Record<string, any> }
+  | Promise<boolean | string | { value: string, avatar?: Record<string, any> }>;
 
 type LoadingValues = {
   loading: true;
@@ -17,15 +17,12 @@ type LoadingValues = {
   data: null;
 };
 
-type LoadedValues = {
+export type LoadedValues = {
   loading: false;
 } & (
   | {
       error: true | string;
-      data: {
-        value: null;
-        meta: null;
-      };
+      data: null;
     }
   | {
       error: null;
@@ -38,7 +35,7 @@ type LoadedValues = {
     }
 );
 
-type Value = IndexedMap<string, LoadingValues | LoadedValues>;
+export type Value = IndexedMap<string, LoadingValues | LoadedValues>;
 
 export interface ArrayTextInputProps extends AutocompleteArrayInputProps {
   source: string;
@@ -48,17 +45,6 @@ export interface ArrayTextInputProps extends AutocompleteArrayInputProps {
     Partial<AvatarProps> & { value: string } & Record<string, any>
   >;
   chipLabel?: (validationData: Record<string, any>) => string | undefined;
-  setParentError?: React.Dispatch<
-    React.SetStateAction<
-      (
-        | string
-        | boolean
-        | {
-            avatar: Record<string, any>;
-          }
-      )[]
-    >
-  >;
 }
 
 export interface ArrayTextUseInputValue extends UseInputValue {

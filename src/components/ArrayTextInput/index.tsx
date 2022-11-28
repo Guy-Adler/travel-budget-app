@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import { useInput, useTranslate } from 'react-admin';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, UseFormReturn } from 'react-hook-form';
 import useEffectAfterMount from '@/src/hooks/useEffectAfterMount';
 import IndexedMap from './IndexedMap';
 import Chip from './Chip';
@@ -9,7 +9,9 @@ import type {
   AddValueEvent,
   ArrayTextInputProps,
   ArrayTextUseInputValue,
+  LoadedValues,
   Validator,
+  Value,
 } from './types';
 import { convertToPropsObject } from './utils';
 
@@ -21,24 +23,63 @@ const addValue = (
   const val = e.target.value;
   // prevent empty tags
   if (val !== '') {
-    setValue((new IndexedMap(previousValue)).set(val, {
-      loading: true,
-      error: null,
-      data: null,
-    }));
+    setValue(
+      new IndexedMap(previousValue).set(val, {
+        loading: true,
+        error: null,
+        data: null,
+      })
+    );
     e.target.value = ''; // remove current value from the input itself (clear it)
     return val;
   }
   return undefined;
 };
 
-// const handleValidation = async (
-//   setValue: (newValue: ArrayTextUseInputValue['field']['value']) => void,
-//   previousValue: ArrayTextUseInputValue['field']['value'],
-//   valuesValidator: Validator,
-// ) => {
-//   const validation = valuesValidator(previousValue)
-// };
+const handleValidation = async (
+  newValue: ReturnType<
+    ArrayTextUseInputValue['field']['value']['getKeyByIndex']
+  >,
+  setValue: (newValue: ArrayTextUseInputValue['field']['value']) => void,
+  previousValue: ArrayTextUseInputValue['field']['value'],
+  valuesValidator: Validator
+) => {
+  if (newValue === undefined) return undefined;
+  const validation = await valuesValidator(newValue);
+  const isError = validation === true || typeof validation === 'string';
+  const data: LoadedValues['data'] = isError
+    ? null
+    : {
+        value: validation === false ? newValue : validation.value,
+        meta: {
+          avatar: validation === false ? undefined : validation.avatar,
+        },
+      };
+  const error = isError ? validation : null;
+
+  const newValues = new IndexedMap(previousValue);
+  // @ts-ignore The compiler is wrong here. `data` and `error` can't both be null or not null ((data === null) ^ (error === null) is always true.)
+  newValues.set(newValue, {
+    error,
+    data,
+    loading: false,
+  });
+  setValue(newValues);
+  return newValues;
+};
+
+const updateErrorState = (
+  value: ArrayTextUseInputValue['field']['value'],
+  setError: UseFormReturn['setError'],
+  clearErrors: UseFormReturn['clearErrors'],
+  source: string
+) => {
+  if ([...value.values()].filter((val) => val.error !== null).length > 0) {
+    setError(`${source}-chipsError`, { type: 'custom' });
+  } else {
+    clearErrors(`${source}-chipsError`);
+  }
+};
 
 const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   onChange,
@@ -50,13 +91,9 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
   valuesValidator = () => true,
   Avatar,
   chipLabel,
-  setParentError,
   ...rest
 }: ArrayTextInputProps) => {
   const translate = useTranslate();
-  const [chipsError, setChipsErrors] = useState<
-    (string | boolean | { avatar: Record<string, any> })[]
-  >([]);
   const [focusedTag, setFocusedTag] = useState(-1);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const anchorRef = useRef<HTMLDivElement | null>(null);
@@ -110,26 +147,11 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
 
   const deleteTag = (displayValue: string | undefined) => {
     if (displayValue === undefined) return;
-    const idx = value.getIndexByKey(displayValue) as number;
     const newValues = new IndexedMap(value);
     newValues.delete(displayValue);
     setValue(newValues);
 
-
-    const newErrors = [
-      ...chipsError.slice(0, idx),
-      ...chipsError.slice(idx + 1),
-    ];
-    setChipsErrors(newErrors);
-
-    if (
-      newErrors.filter((err) => err === true || typeof err === 'string')
-        .length > 0
-    ) {
-      form.setError(`${source}-chipsError`, { type: 'custom' });
-    } else {
-      form.clearErrors(`${source}-chipsError`);
-    }
+    updateErrorState(newValues, form.setError, form.clearErrors, source);
 
     setFocusedTag(-1);
   };
@@ -145,35 +167,28 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
     if (
       focusedTag < -1 ||
       !Number.isInteger(focusedTag) ||
-      focusedTag > chipsError.length
+      focusedTag > value.size
     ) {
       setFocusedTag(-1);
     } else {
       moveFocus(focusedTag);
     }
-  }, [focusedTag, chipsError.length]);
-
-  useEffect(() => {
-    // HACK there should definitely be a way of doing this without creating 2 sources of truth.
-    setParentError?.(chipsError);
-  }, [chipsError, setParentError]);
+  }, [focusedTag, value.size]);
 
   return (
     <TextField
       name={name}
       onBlur={async (e) => {
+        const previousValue = value;
         const newValue = addValue(e, setValue, value);
-        if (newValue) {
-          const newErrors = [...chipsError, await valuesValidator(newValue)];
-          setChipsErrors(newErrors);
-          if (
-            newErrors.filter((err) => err === true || typeof err === 'string')
-              .length > 0
-          ) {
-            form.setError(`${source}-chipsError`, { type: 'custom' });
-          } else {
-            form.clearErrors(`${source}-chipsError`);
-          }
+        const newValues = await handleValidation(
+          newValue,
+          setValue,
+          previousValue,
+          valuesValidator
+        );
+        if (newValues) {
+          updateErrorState(newValues, form.setError, form.clearErrors, source);
         }
         fieldOnBlur();
       }}
@@ -193,22 +208,25 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
         if ([...newTagKeys, 'Enter'].includes(e.key)) {
           e.preventDefault();
           e.stopPropagation();
+          const previousValue = value;
           const newValue = addValue(
             e as unknown as AddValueEvent,
             setValue,
             value
           );
-          if (newValue) {
-            const newErrors = [...chipsError, await valuesValidator(newValue)];
-            setChipsErrors(newErrors);
-            if (
-              newErrors.filter((err) => err === true || typeof err === 'string')
-                .length > 0
-            ) {
-              form.setError(`${source}-chipsError`, { type: 'custom' });
-            } else {
-              form.clearErrors(`${source}-chipsError`);
-            }
+          const newValues = await handleValidation(
+            newValue,
+            setValue,
+            previousValue,
+            valuesValidator
+          );
+          if (newValues) {
+            updateErrorState(
+              newValues,
+              form.setError,
+              form.clearErrors,
+              source
+            );
           }
         }
 
@@ -235,16 +253,16 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
         startAdornment:
           value.size > 0 &&
           [...value.entries()].map(([renderValue, val], idx) => {
+            const isLoadingError = val.loading;
+            const isError = val.error !== null;
             const chipLabelString = chipLabel
-              ? chipLabel(convertToPropsObject(chipsError[idx])) ?? renderValue
+              ? chipLabel(
+                  convertToPropsObject(isError ? val.error : val.data ?? false)
+                ) ?? renderValue
               : renderValue;
-            const isLoadingError = idx >= chipsError.length;
-            const isError =
-              idx < chipsError.length &&
-              (chipsError[idx] === true || typeof chipsError[idx] === 'string');
             let tooltipTitle = '';
-            if (isError && typeof chipsError[idx] === 'string') {
-              tooltipTitle = chipsError[idx] as string;
+            if (isError && typeof val.error === 'string') {
+              tooltipTitle = val.error;
             } else if (!isError) {
               tooltipTitle = chipLabelString === renderValue ? '' : renderValue;
             }
@@ -253,7 +271,6 @@ const ArrayTextInput: React.FC<ArrayTextInputProps> = ({
               <Chip
                 key={Math.random()}
                 Avatar={Avatar}
-                chipsError={chipsError}
                 chipLabelString={chipLabelString}
                 deleteTag={deleteTag}
                 editTag={editTag}
@@ -298,7 +315,6 @@ ArrayTextInput.defaultProps = {
   valuesValidator: () => false,
   Avatar: undefined,
   chipLabel: undefined,
-  setParentError: undefined,
 };
 
 export type {
@@ -306,4 +322,5 @@ export type {
   ArrayTextInputProps,
   ArrayTextUseInputValue,
   Validator,
+  Value,
 };
