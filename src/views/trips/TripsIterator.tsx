@@ -3,21 +3,19 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { useListContext } from 'react-admin';
 import type { Schema } from '@/src/types/schema';
 import TripCard from './TripCard';
-import CreateCard from './CreateCard';
 
 const TripsIterator = () => {
-  const { data, perPage, page } = useListContext<Schema['trips']>();
-
+  const { data } = useListContext<Schema['trips']>();
   return (
     <Grid
       container
-      disableEqualOverflow
       spacing={{ xs: 2, md: 3 }}
       columns={{ xs: 4, sm: 8, md: 12 }}
-      marginBottom={1}
+      margin={0}
+      height='100%'
+      width='100%'
     >
-      <CreateCard />
-      {data.slice((page - 1) * perPage, page * perPage).map((trip) => (
+      {data.map((trip) => (
         <Grid
           sm={4} // 2 cols
           md={12 / 5} // 5 cols

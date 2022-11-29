@@ -52,7 +52,7 @@ const getList = async ({
   } = params;
 
   const rangeFrom = (pagination.page - 1) * pagination.perPage;
-  const rangeTo = rangeFrom + pagination.perPage;
+  const rangeTo = rangeFrom + pagination.perPage - 1;
 
   let query = client
     .from(resourceOptions.view)

@@ -1,11 +1,22 @@
 import React, { useState } from 'react';
-import { List, Pagination } from 'react-admin';
+import {
+  List,
+  Pagination,
+  TopToolbar,
+  ExportButton,
+} from 'react-admin';
 import TripsIterator from './TripsIterator';
 import Empty from './Empty';
 import CreateTrip from './CreateTrip';
 import DialogContext from './DialogContext';
+import CreateButton from './CreateButton';
 
-const TripsPagination = () => <Pagination rowsPerPageOptions={[]} />;
+const TripsActions = () => (
+  <TopToolbar>
+    <CreateButton />
+    <ExportButton />
+  </TopToolbar>
+);
 
 const TripList = () => {
   const dialogState = useState(false);
@@ -13,11 +24,10 @@ const TripList = () => {
   return (
     <DialogContext.Provider value={dialogState}>
       <List
-        pagination={<TripsPagination />}
         empty={<Empty />}
-        perPage={19}
         emptyWhileLoading
         sort={{ field: 'updated_at', order: 'DESC' }}
+        actions={<TripsActions />}
       >
         <TripsIterator />
       </List>
