@@ -125,7 +125,7 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
         <CreateBase
           redirect={false}
           transform={removeOutsideDataAndResubmit}
-          mutationOptions={{ onSuccess }}
+          mutationOptions={{ onSuccess, onSettled: onClose }}
         >
           <Form>
             <TextInput source="name" validate={required()} fullWidth />
