@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   List,
-  Pagination,
   TopToolbar,
   ExportButton,
 } from 'react-admin';
