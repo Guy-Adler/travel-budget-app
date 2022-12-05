@@ -101,10 +101,10 @@ export const AccountSkeleton: React.FC = () => {
       }}
       labels={{
         password: {
-          label: 'Password',
+          label: 'ra.auth.password',
         },
         confirmPassword: {
-          label: 'Confirm Password',
+          label: 'auth.confirm_password',
         },
       }}
     />

@@ -111,7 +111,7 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
         can_edit: canEditValue.current,
       }))
     );
-    notify('Shared with emails linked to discoverable users.', {
+    notify('shares.messages.success', {
       type: 'success',
     });
   };
@@ -128,7 +128,7 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
           mutationOptions={{ onSuccess, onSettled: onClose }}
         >
           <Form>
-            <TextInput source="name" validate={required()} fullWidth />
+            <TextInput source="name" label="resources.trips.trip_name" validate={required()} fullWidth />
             <Stack direction={{ xs: 'column', sm: 'row' }} gap={2} sx={{
               
             }}>
@@ -153,7 +153,7 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
                         <VisibilityIcon
                           sx={{ mr: 1, color: 'rgba(0, 0, 0, 0.54)' }}
                         />
-                        <ListItemText>Viewer</ListItemText>
+                        <ListItemText>{translate('shares.permissions.viewer')}</ListItemText>
                       </Stack>
                     ),
                   },
@@ -164,7 +164,7 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
                         <CreateIcon
                           sx={{ mr: 1, color: 'rgba(0, 0, 0, 0.54)' }}
                         />
-                        <ListItemText>Editor</ListItemText>
+                        <ListItemText>{translate('shares.permissions.editor')}</ListItemText>
                       </Stack>
                     ),
                   },

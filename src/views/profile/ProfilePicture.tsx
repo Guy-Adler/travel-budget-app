@@ -205,7 +205,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ size, identity }) => {
               >
                 <ImageField source="src" title="title" />
               </ImageInput>
-              <p>No more than 5MB</p>
+              <p>{translate('profile.upload_size_limit')}</p>
             </DialogContent>
             <DialogActions>
               <Button

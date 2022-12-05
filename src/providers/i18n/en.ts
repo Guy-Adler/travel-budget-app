@@ -10,6 +10,7 @@ const customEnglishMessages: TranslationMessages = {
   },
   auth: {
     email: 'Email',
+    confirm_password: 'Confirm Password',
     google_sign_in: 'Sign in with google',
     google_sign_up: 'Sign up with google',
     forgot_password: 'Forgot Password?',
@@ -37,6 +38,7 @@ const customEnglishMessages: TranslationMessages = {
     picture_dialog_title: 'Edit or Delete Your Profile Picture',
     deleted_picture: 'Deleted profile picture successfully.',
     uploaded_picture: 'Uploaded profile picture successfully.',
+    upload_size_limit: 'No more than 5MB',
     personal_data: {
       title: 'Personal Data',
       description: 'Edit or delete your personal data',
@@ -86,6 +88,15 @@ const customEnglishMessages: TranslationMessages = {
         cant_share_yourself: 'You can not share a trip with yourself.',
       },
     },
+  },
+  shares: {
+    messages: {
+      success: 'Shared with emails linked to discoverable users.',
+    },
+    permissions: {
+      viewer: 'Viewer',
+      editor: 'Editor'
+    }
   },
   resources: {
     profiles: {

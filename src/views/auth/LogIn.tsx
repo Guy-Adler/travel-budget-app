@@ -162,7 +162,7 @@ const LoginPage: React.FC = () => {
                 type="email"
                 autoFocus
                 source="username"
-                label={translate('auth.email')}
+                label="auth.email"
                 autoComplete="username"
                 disabled={loading}
                 validate={required()}
@@ -182,7 +182,7 @@ const LoginPage: React.FC = () => {
               <Box sx={{ marginTop: '1em' }}>
                 <PasswordInput
                   source="confirmPassword"
-                  label="Confirm Password"
+                  label="auth.confirm_password"
                   autoComplete={isSignUp ? 'new-password' : 'current-password'}
                   disabled={loading}
                   validate={
