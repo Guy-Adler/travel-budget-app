@@ -41,7 +41,7 @@ const AlertDialog = () => {
   return (
     <>
       <Button
-        variant="outlined"
+        variant="text"
         onClick={() => {
           setOpen(true);
         }}

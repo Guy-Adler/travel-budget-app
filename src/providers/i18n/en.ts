@@ -10,8 +10,11 @@ const customEnglishMessages: TranslationMessages = {
   },
   auth: {
     email: 'Email',
-    google: 'Sign in with google',
+    google_sign_in: 'Sign in with google',
+    google_sign_up: 'Sign up with google',
     forgot_password: 'Forgot Password?',
+    sign_up: 'Sign Up',
+    sign_in: 'Sign In',
     send_password_reset: 'Send Password Reset?',
     send_reset_link: 'Send Reset Link',
     password_reset_alert_dialog_description:
@@ -19,12 +22,14 @@ const customEnglishMessages: TranslationMessages = {
     reset_link_sent:
       'Login link sent successfully!\nAfter clicking the link, go to your profile to reset your password.',
     validation: {
-      confirm_password: 'Passwords do not match',
+      confirm_password: 'The password confirmation does not match.',
     },
     reset_password_error:
       'An error occurred while resetting your password.\nPlease try again later.',
     reset_password_success: 'Password changed successfully!',
     account_delete_success: 'Account deleted successfully!',
+    sign_up_activation:
+      'An activation link has been sent to your email.\nPlease click the link in the email to activate your account.',
   },
   profile: {
     title: 'Profile',
