@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { List, TopToolbar, ExportButton } from 'react-admin';
+import { List, TopToolbar, ExportButton, SortButton } from 'react-admin';
 import TripsIterator from './TripsIterator';
 import Empty from './Empty';
 import CreateTrip from './CreateTrip';
@@ -8,6 +8,7 @@ import CreateButton from './CreateButton';
 
 const TripsActions = () => (
   <TopToolbar>
+    <SortButton fields={['trip_name', 'updated_at']} />
     <CreateButton />
     <ExportButton />
   </TopToolbar>
