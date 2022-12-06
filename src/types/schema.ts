@@ -56,6 +56,7 @@ export type Schema = {
     updated_by_last_name: string;
     updated_by_avatar_url: string | null;
     is_owner: boolean;
+    can_edit: boolean;
   };
   shares: {
     id: number;

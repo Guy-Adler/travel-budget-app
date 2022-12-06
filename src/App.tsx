@@ -42,6 +42,7 @@ const resources: ResourcesOptions = {
       'updated_by_last_name',
       'updated_by_avatar_url',
       'is_owner',
+      'can_edit',
     ],
     fullTextSearchFields: ['trip_name'],
   },
