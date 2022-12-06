@@ -9,7 +9,7 @@ import CreatedIcon from '@mui/icons-material/Add';
 import UpdatedIcon from '@mui/icons-material/Edit';
 import { styled } from '@mui/material/styles';
 import Stack from '@mui/material/Stack';
-import { useTranslate } from 'react-admin';
+import { useTranslate, useRedirect } from 'react-admin';
 import { formatRelative } from 'date-fns';
 import useDateFNSLocale from '@/src/hooks/useDateFNSLocale';
 import type { Schema } from '@/src/types/schema';
@@ -29,6 +29,7 @@ const SmallAvatar = styled(Avatar)(({ theme }) => ({
 const TripCard: React.FC<TripCardProps> = ({ trip }) => {
   const locale = useDateFNSLocale();
   const translate = useTranslate();
+  const redirect = useRedirect();
   const ownerIdentity = createIdentity({
     id: trip.owner,
     first_name: trip.owner_first_name,
@@ -45,7 +46,10 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
   return (
     <Card sx={{ height: '100%' }} elevation={3}>
       <CardActionArea sx={{ height: '100%' }}>
-        <CardContent sx={{ height: '100%' }}>
+        <CardContent
+          sx={{ height: '100%' }}
+          onClick={() => redirect('show', 'trips', trip.id)}
+        >
           <Typography variant="h5">{trip.trip_name}</Typography>
           <Stack direction="row" alignItems="center" gap={1}>
             <Badge

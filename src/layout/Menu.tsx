@@ -42,7 +42,7 @@ const CustomMenu: React.FC = () => {
         page.data.map((trip) => (
           <Menu.Item
             key={trip.id}
-            to={`trips/${trip.id}`}
+            to={`trips/${trip.id}/show`}
             primaryText={trip.trip_name}
             leftIcon={trip.is_owner ? <TripIcon /> : <SharedIcon />}
           />
