@@ -128,10 +128,13 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
           mutationOptions={{ onSuccess, onSettled: onClose }}
         >
           <Form>
-            <TextInput source="name" label="resources.trips.trip_name" validate={required()} fullWidth />
-            <Stack direction={{ xs: 'column', sm: 'row' }} gap={2} sx={{
-              
-            }}>
+            <TextInput
+              source="name"
+              label="resources.trips.trip_name"
+              validate={required()}
+              fullWidth
+            />
+            <Stack direction={{ xs: 'column', sm: 'row' }} gap={2} sx={{}}>
               <ArrayTextInput
                 source="shares"
                 label="resources.trips.shares"
@@ -153,7 +156,9 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
                         <VisibilityIcon
                           sx={{ mr: 1, color: 'rgba(0, 0, 0, 0.54)' }}
                         />
-                        <ListItemText>{translate('shares.permissions.viewer')}</ListItemText>
+                        <ListItemText>
+                          {translate('shares.permissions.viewer')}
+                        </ListItemText>
                       </Stack>
                     ),
                   },
@@ -164,7 +169,9 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ open, onClose }) => {
                         <CreateIcon
                           sx={{ mr: 1, color: 'rgba(0, 0, 0, 0.54)' }}
                         />
-                        <ListItemText>{translate('shares.permissions.editor')}</ListItemText>
+                        <ListItemText>
+                          {translate('shares.permissions.editor')}
+                        </ListItemText>
                       </Stack>
                     ),
                   },

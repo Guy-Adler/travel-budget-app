@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-import {
-  List,
-  TopToolbar,
-  ExportButton,
-} from 'react-admin';
+import { List, TopToolbar, ExportButton } from 'react-admin';
 import TripsIterator from './TripsIterator';
 import Empty from './Empty';
 import CreateTrip from './CreateTrip';

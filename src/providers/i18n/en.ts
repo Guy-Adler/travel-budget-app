@@ -95,8 +95,8 @@ const customEnglishMessages: TranslationMessages = {
     },
     permissions: {
       viewer: 'Viewer',
-      editor: 'Editor'
-    }
+      editor: 'Editor',
+    },
   },
   resources: {
     profiles: {
@@ -116,7 +116,8 @@ const customEnglishMessages: TranslationMessages = {
   },
   meta: {
     created_at: 'Created %{date} by %{name} |||| Created %{date}',
-    last_updated_at: 'Last updated %{date} by %{name} |||| Last Updated %{date}',
+    last_updated_at:
+      'Last updated %{date} by %{name} |||| Last Updated %{date}',
   },
   inputs: {
     array_text_input: {

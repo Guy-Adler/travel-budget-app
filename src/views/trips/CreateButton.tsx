@@ -3,13 +3,8 @@ import React, { ReactElement, useContext } from 'react';
 import { styled } from '@mui/material/styles';
 import { Fab, useMediaQuery, Theme } from '@mui/material';
 import ContentAdd from '@mui/icons-material/Add';
-import {
-  useTranslate,
-  Button,
-  ButtonProps,
-} from 'react-admin';
+import { useTranslate, Button, ButtonProps } from 'react-admin';
 import DialogContext from './DialogContext';
-
 
 const PREFIX = 'RaCreateButton';
 
@@ -63,7 +58,9 @@ const CreateButton = (props: CreateButtonProps) => {
   return isSmall ? (
     <StyledFab
       color="primary"
-      className={`${CreateButtonClasses.floating}${className ? ` ${className}` : ''}`}
+      className={`${CreateButtonClasses.floating}${
+        className ? ` ${className}` : ''
+      }`}
       aria-label={label && translate(label)}
       onClick={() => dialogContext[1](true)}
     >

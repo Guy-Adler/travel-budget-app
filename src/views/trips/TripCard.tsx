@@ -65,8 +65,16 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
                   locale,
                   weekStartsOn: 0,
                 }),
-                name: trip.is_owner ? translate('me') : ownerIdentity.fullName ?? '',
-                smart_count: (trip.is_owner ? translate('me') : ownerIdentity.fullName ?? '').length === 0 ? 0 : 1
+                name: trip.is_owner
+                  ? translate('me')
+                  : ownerIdentity.fullName ?? '',
+                smart_count:
+                  (trip.is_owner
+                    ? translate('me')
+                    : ownerIdentity.fullName ?? ''
+                  ).length === 0
+                    ? 0
+                    : 1,
               })}
             </Typography>
           </Stack>
@@ -95,7 +103,13 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
                   updatedByIdentity.id === client.auth.user()?.id
                     ? translate('me')
                     : updatedByIdentity.fullName ?? '',
-                smart_count: (trip.is_owner ? translate('me') : ownerIdentity.fullName ?? '').length === 0 ? 0 : 1
+                smart_count:
+                  (trip.is_owner
+                    ? translate('me')
+                    : ownerIdentity.fullName ?? ''
+                  ).length === 0
+                    ? 0
+                    : 1,
               })}
             </Typography>
           </Stack>

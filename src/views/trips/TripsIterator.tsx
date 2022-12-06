@@ -12,8 +12,8 @@ const TripsIterator = () => {
       spacing={{ xs: 2, md: 3 }}
       columns={{ xs: 4, sm: 8, md: 12 }}
       margin={0}
-      height='100%'
-      width='100%'
+      height="100%"
+      width="100%"
     >
       {data.map((trip) => (
         <Grid
