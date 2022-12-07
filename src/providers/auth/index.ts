@@ -1,6 +1,6 @@
 import type { AuthProvider, UserIdentity } from 'ra-core';
-import client from '../supabase';
-import type { Schema } from '../../types/schema';
+import type { Schema } from '@/types/schema';
+import client from '@/providers/client';
 
 export type SetPasswordParams = { password: string };
 export interface SupabaseAuthProvider extends AuthProvider {

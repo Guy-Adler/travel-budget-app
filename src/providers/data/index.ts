@@ -1,5 +1,5 @@
 import type { DataProvider, GetListParams } from 'react-admin';
-import client from '../supabase';
+import client from '@/providers/client';
 
 type ResourceOptionsWithFullTextSearch = {
   table?: string;

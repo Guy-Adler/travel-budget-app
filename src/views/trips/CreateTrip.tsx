@@ -20,11 +20,11 @@ import ArrayTextInput, {
   Validator,
   Value as SharesValue,
   ArrayTextInputProps,
-} from '@/src/components/ArrayTextInput/';
-import SelectInputNotNull from '@/src/components/SelectInputNotNull';
-import client from '@/src/providers/supabase';
-import type { Schema, UUID } from '@/src/types/schema';
-import { createIdentity } from '@/src/providers/auth';
+} from '@/components/base/ArrayTextInput';
+import SelectInputNotNull from '@/components/base/SelectInputNotNull';
+import { createIdentity } from '@/providers/auth';
+import client from '@/providers/client';
+import type { Schema, UUID } from '@/types/schema';
 
 interface CreateDialogProps {
   open: boolean;

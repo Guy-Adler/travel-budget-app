@@ -4,7 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import CardActionArea from '@mui/material/CardActionArea';
 import Typography from '@mui/material/Typography';
 import { useRedirect } from 'react-admin';
-import type { Schema } from '@/src/types/schema';
+import type { Schema } from '@/types/schema';
 import MetaView from './MetaView';
 
 interface TripCardProps {

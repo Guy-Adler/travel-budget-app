@@ -1,6 +1,6 @@
 import React from 'react';
 import { Show, useRecordContext } from 'react-admin';
-import type { Schema } from '@/src/types/schema';
+import type { Schema } from '@/types/schema';
 import MetaView from './MetaView';
 
 const TripTitle = () => {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
+import { createTheme } from '@mui/material/styles';
 import {
   Admin,
   Resource,
@@ -7,15 +8,14 @@ import {
   ListGuesser,
   defaultTheme,
 } from 'react-admin';
-import { createTheme } from '@mui/material/styles';
-import { supabaseAuthProvider } from './providers/auth';
-import { supabaseDataProvider, ResourcesOptions } from './providers/data';
-import i18nProvider from './providers/i18n';
-import LogIn from './views/auth/LogIn';
-import Layout from './layout';
-import Profile from './views/profile';
-import { TripList, TripShow } from './views/trips';
-import useTitle from './hooks/useTitle';
+import useTitle from '@/hooks/useTitle';
+import { supabaseAuthProvider } from '@/providers/auth';
+import { supabaseDataProvider, ResourcesOptions } from '@/providers/data';
+import i18nProvider from '@/providers/i18n';
+import LogIn from '@/views/auth/LogIn';
+import Profile from '@/views/profile';
+import { TripList, TripShow } from '@/views/trips';
+import Layout from '@/src/layout';
 
 const resources: ResourcesOptions = {
   profiles: [

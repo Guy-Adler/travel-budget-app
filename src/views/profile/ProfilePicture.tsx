@@ -1,4 +1,12 @@
 import React, { useState } from 'react';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
+import EditIcon from '@mui/icons-material/Edit';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import {
   Form,
   required,
@@ -8,17 +16,9 @@ import {
   useNotify,
   UserIdentity,
 } from 'react-admin';
-import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
-import EditIcon from '@mui/icons-material/Edit';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
+import client from '@/providers/client';
+import type { Schema } from '@/types/schema';
 import classNames from './ProfilePicture.module.scss';
-import client from '@/src/providers/supabase';
-import type { Schema } from '@/src/types/schema';
 
 interface ProfilePictureProps {
   size: string | number;

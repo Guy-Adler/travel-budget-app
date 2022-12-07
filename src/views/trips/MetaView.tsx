@@ -8,10 +8,10 @@ import UpdatedIcon from '@mui/icons-material/Edit';
 import { styled } from '@mui/material/styles';
 import { formatRelative } from 'date-fns';
 import { useTranslate } from 'react-admin';
-import client from '@/src/providers/supabase';
-import useDateFNSLocale from '@/src/hooks/useDateFNSLocale';
-import { createIdentity } from '@/src/providers/auth';
-import type { Schema } from '@/src/types/schema';
+import useDateFNSLocale from '@/hooks/useDateFNSLocale';
+import { createIdentity } from '@/providers/auth';
+import client from '@/providers/client';
+import type { Schema } from '@/types/schema';
 
 const SmallAvatar = styled(Avatar)(({ theme }) => ({
   width: 22,

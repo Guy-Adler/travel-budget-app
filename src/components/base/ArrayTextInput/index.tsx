@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import { useInput, useTranslate } from 'react-admin';
-import useEffectAfterMount from '@/src/hooks/useEffectAfterMount';
+import useEffectAfterMount from '@/hooks/useEffectAfterMount';
 import IndexedMap from './IndexedMap';
 import Chip from './Chip';
 import type {

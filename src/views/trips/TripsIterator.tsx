@@ -1,7 +1,7 @@
 import React from 'react';
 import Grid from '@mui/material/Unstable_Grid2';
 import { useListContext } from 'react-admin';
-import type { Schema } from '@/src/types/schema';
+import type { Schema } from '@/types/schema';
 import TripCard from './TripCard';
 
 const TripsIterator = () => {

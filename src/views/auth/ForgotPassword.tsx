@@ -1,4 +1,11 @@
 import React, { useState } from 'react';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import CircularProgress from '@mui/material/CircularProgress';
 import {
   Form,
   required,
@@ -7,14 +14,7 @@ import {
   useTranslate,
   useNotify,
 } from 'react-admin';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import CircularProgress from '@mui/material/CircularProgress';
-import supabase from '@/src/providers/supabase';
+import supabase from '@/providers/client';
 
 const AlertDialog = () => {
   const [open, setOpen] = useState(false);

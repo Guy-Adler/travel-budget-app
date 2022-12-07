@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CircularProgress from '@mui/material/CircularProgress';
+import Collapse from '@mui/material/Collapse';
+import Divider from '@mui/material/Divider';
+import Stack from '@mui/material/Stack';
+import LockIcon from '@mui/icons-material/Lock';
+import GoogleIcon from '@mui/icons-material/Google';
 import {
   Form,
   required,
@@ -12,20 +23,9 @@ import {
   useRedirect,
   Validator,
 } from 'react-admin';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CircularProgress from '@mui/material/CircularProgress';
-import Collapse from '@mui/material/Collapse';
-import Divider from '@mui/material/Divider';
-import Stack from '@mui/material/Stack';
-import LockIcon from '@mui/icons-material/Lock';
-import GoogleIcon from '@mui/icons-material/Google';
+import useTitle from '@/hooks/useTitle';
+import client, { ApiError } from '@/providers/client';
 import ForgotPasswordButton from './ForgotPassword';
-import client, { ApiError } from '@/src/providers/supabase';
-import useTitle from '@/src/hooks/useTitle';
 
 interface FormValues {
   username?: string;

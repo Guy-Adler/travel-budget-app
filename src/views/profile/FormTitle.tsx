@@ -1,10 +1,10 @@
 import React from 'react';
-import { useTranslate } from 'react-admin';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { Theme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTranslate } from 'react-admin';
 
 interface FormTitleProps {
   title: string;

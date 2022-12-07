@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import SharedIcon from '@mui/icons-material/People';
 import TripIcon from '@mui/icons-material/Luggage';
 import { Menu, useInfiniteGetList } from 'react-admin';
-import type { Schema } from '@/src/types/schema';
+import type { Schema } from '@/types/schema';
 
 const CustomMenu: React.FC = () => {
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =

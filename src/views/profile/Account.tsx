@@ -9,8 +9,8 @@ import {
   useLogout,
   useNotify,
 } from 'react-admin';
+import client from '@/providers/client';
 import Section from './Section';
-import client from '@/src/providers/supabase';
 
 interface AccountProps {
   id: Identifier;

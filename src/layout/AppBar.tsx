@@ -1,8 +1,8 @@
 import React from 'react';
-import { AppBar, Logout, UserMenu, useTranslate } from 'react-admin';
 import { Link } from 'react-router-dom';
 import { MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import ProfileIcon from '@mui/icons-material/ManageAccounts';
+import { AppBar, Logout, UserMenu, useTranslate } from 'react-admin';
 
 const ProfileMenu = React.forwardRef((props, ref) => {
   const translate = useTranslate();

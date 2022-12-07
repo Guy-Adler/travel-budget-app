@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button, Confirm, useLogout, useNotify } from 'react-admin';
-import client from '@/src/providers/supabase';
+import client from '@/providers/client';
 
 const deleteProfilePictureFromStorage = async () => {
   // get list of profile pictures with the user's name (RLS only allows files named with the uid of the user to be accessed.)

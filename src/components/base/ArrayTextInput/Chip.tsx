@@ -1,12 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import { useTranslate } from 'react-admin';
-
 import ChipMui from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
-
 import { ChipIcon, convertToPropsObject } from './utils';
-
 import type { ArrayTextInputProps, ArrayTextUseInputValue } from './types';
 
 interface ChipProps {

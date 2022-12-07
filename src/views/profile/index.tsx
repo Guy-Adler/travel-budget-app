@@ -4,11 +4,11 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Skeleton from '@mui/material/Skeleton';
 import { useTranslate, useGetIdentity, useLogout, Title } from 'react-admin';
+import useTitle from '@/hooks/useTitle';
 import ProfilePicture from './ProfilePicture';
 import PersonalData, { PersonalDataSkeleton } from './PersonalData';
 import Account, { AccountSkeleton } from './Account';
 import DeleteAccount from './DeleteAccount';
-import useTitle from '@/src/hooks/useTitle';
 
 const AVATAR_SIZE = '8rem';
 
