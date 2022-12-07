@@ -38,10 +38,6 @@ const validateEmail: Validator = async (value: string) => {
   // Check if email is valid:
   if (!EMAIL_REGEX.test(value)) return 'ra.validation.email';
 
-  await new Promise((res) => {
-    setTimeout(res, 1000);
-  });
-
   // Get user data, check if it is relevant.
   const { error, data } = await client
     .from<Schema['profiles']>('profiles')
