@@ -8,6 +8,9 @@ const customEnglishMessages: TranslationMessages = {
   app: {
     name: 'Travel Budget App',
   },
+  action: {
+    share: 'Share',
+  },
   auth: {
     email: 'Email',
     confirm_password: 'Confirm Password',
